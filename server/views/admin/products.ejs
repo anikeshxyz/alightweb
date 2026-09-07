@@ -1,78 +1,179 @@
-<%- include('header', { path: '/products' , admin: admin, title: 'Manage Products' }) %>
+<%- include('header', { path: '/products', admin: admin, title: 'Product Catalog Management' }) %>
 
-    <div style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end;">
-        <div>
-            <h2 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 0.5rem; color: var(--secondary-color);">Product Management</h2>
-            <p style="color: var(--text-muted); font-size: 1rem;">View, edit, and manage your store's inventory.</p>
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success">
+            <i class="fas fa-circle-check"></i>
+            <span><%= success %></span>
         </div>
-        <a href="/admin/products/add" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add New Product
-        </a>
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger">
+            <i class="fas fa-circle-exclamation"></i>
+            <span><%= error %></span>
+        </div>
+    <% } %>
+
+    <!-- Page Header & Action Controls -->
+    <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2 style="font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; color: var(--secondary-color); margin-bottom: 0.35rem;">
+                Product Catalog
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                Manage product inventory, pricing, materials, and digital assets.
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="/admin/products/export" class="btn btn-secondary">
+                <i class="fas fa-file-arrow-down"></i> Export Catalog
+            </a>
+            <a href="/admin/products/add" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Product
+            </a>
+        </div>
     </div>
 
-    <div class="card" style="padding: 0; overflow: hidden; border-radius: 1.25rem;">
+    <!-- Filters & Search Toolbar -->
+    <div class="card" style="padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+        <form action="/admin/products" method="GET" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <!-- Search Bar -->
+            <div class="search-input-group" style="flex: 1; min-width: 260px;">
+                <i class="fas fa-magnifying-glass"></i>
+                <input type="text" name="q" class="form-control" placeholder="Search by title, material, category..." value="<%= typeof currentQuery !== 'undefined' ? currentQuery : '' %>">
+            </div>
+
+            <!-- Category Filter Dropdown -->
+            <div style="min-width: 200px;">
+                <select name="category" class="form-control" style="cursor: pointer;" onchange="this.form.submit()">
+                    <option value="all" <%= currentCategory === 'all' ? 'selected' : '' %>>All Categories</option>
+                    <option value="modular-kitchen" <%= currentCategory === 'modular-kitchen' ? 'selected' : '' %>>Modular Kitchen</option>
+                    <option value="kitchen-storage" <%= currentCategory === 'kitchen-storage' ? 'selected' : '' %>>Kitchen Storage</option>
+                    <option value="tabletop-cutlery" <%= currentCategory === 'tabletop-cutlery' ? 'selected' : '' %>>Tabletop & Cutlery</option>
+                    <option value="bathroom-fixtures" <%= currentCategory === 'bathroom-fixtures' ? 'selected' : '' %>>Bathroom Fixtures</option>
+                    <option value="wardrobe-accessories" <%= currentCategory === 'wardrobe-accessories' ? 'selected' : '' %>>Wardrobe Accessories</option>
+                    <option value="wire-products" <%= currentCategory === 'wire-products' ? 'selected' : '' %>>Wire Products</option>
+                </select>
+            </div>
+
+            <!-- Stock Filter Dropdown -->
+            <div style="min-width: 170px;">
+                <select name="stock" class="form-control" style="cursor: pointer;" onchange="this.form.submit()">
+                    <option value="all" <%= currentStock === 'all' ? 'selected' : '' %>>All Stock Status</option>
+                    <option value="in_stock" <%= currentStock === 'in_stock' ? 'selected' : '' %>>In Stock (>10)</option>
+                    <option value="low_stock" <%= currentStock === 'low_stock' ? 'selected' : '' %>>Low Stock (1-10)</option>
+                    <option value="out_of_stock" <%= currentStock === 'out_of_stock' ? 'selected' : '' %>>Out of Stock (0)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-secondary">
+                <i class="fas fa-filter"></i> Apply
+            </button>
+
+            <% if ((currentQuery && currentQuery.trim()) || (currentCategory && currentCategory !== 'all') || (currentStock && currentStock !== 'all')) { %>
+                <a href="/admin/products" class="btn btn-sm" style="color: var(--text-muted); background: #f1f5f9;">
+                    <i class="fas fa-xmark"></i> Clear
+                </a>
+            <% } %>
+        </form>
+    </div>
+
+    <!-- Products Table Card -->
+    <div class="card" style="padding: 0; overflow: hidden;">
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 80px; text-align: center;">Preview</th>
+                        <th style="width: 70px; text-align: center;">Thumbnail</th>
                         <th>Product Details</th>
-                        <th>Price</th>
-                        <th>Stock Status</th>
                         <th>Category</th>
-                        <th style="text-align: right;">Actions</th>
+                        <th>Pricing</th>
+                        <th>Inventory</th>
+                        <th style="text-align: right; padding-right: 1.5rem;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <% if (products.length > 0) { %>
+                    <% if (products && products.length > 0) { %>
                         <% products.forEach(product => { %>
                             <tr>
+                                <!-- Thumbnail -->
                                 <td style="text-align: center;">
-                                    <div style="width: 50px; height: 50px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f8fafc; border: 1px solid var(--border-color); margin: 0 auto;">
-                                        <% if (product.image) { %>
-                                            <img src="<%= product.image %>" alt="<%= product.name %>" style="width: 100%; height: 100%; object-fit: cover;">
-                                        <% } else { %>
-                                            <i class="fas fa-image" style="color: var(--text-muted); opacity: 0.5;"></i>
+                                    <div style="width: 52px; height: 52px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f8fafc; border: 1px solid var(--border-color); margin: 0 auto;">
+                                        <% let imgSrc = product.image || (product.images && product.images.length > 0 ? product.images[0] : '/images/placeholder.jpg'); %>
+                                        <img src="<%= imgSrc %>" alt="<%= product.name %>" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/images/placeholder.jpg'; this.onerror=null;">
+                                    </div>
+                                </td>
+
+                                <!-- Details -->
+                                <td>
+                                    <div style="font-weight: 700; color: var(--secondary-color); font-size: 0.95rem; margin-bottom: 0.2rem;">
+                                        <%= product.name %>
+                                    </div>
+                                    <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                                        <span style="font-size: 0.75rem; color: var(--text-muted); font-family: 'Space Mono', monospace;">
+                                            ID: <%= product._id.toString().substring(18) %>
+                                        </span>
+                                        <% if (product.material) { %>
+                                            <span style="font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 0.15rem 0.5rem; border-radius: 4px;">
+                                                <%= product.material %>
+                                            </span>
                                         <% } %>
                                     </div>
                                 </td>
+
+                                <!-- Category -->
                                 <td>
-                                    <div style="font-weight: 700; color: var(--secondary-color); margin-bottom: 0.2rem;"><%= product.name %></div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted); font-family: monospace;"><%= product._id %></div>
+                                    <div style="font-weight: 600; font-size: 0.85rem; color: var(--secondary-color); text-transform: capitalize;">
+                                        <%= product.category ? product.category.replace(/-/g, ' ') : 'General' %>
+                                    </div>
+                                    <% if (product.subCategory) { %>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: capitalize;">
+                                            ↳ <%= product.subCategory.replace(/-/g, ' ') %>
+                                        </div>
+                                    <% } %>
                                 </td>
+
+                                <!-- Pricing -->
                                 <td>
-                                    <div style="font-weight: 700; color: var(--primary-dark);">₹<%= product.price.toLocaleString('en-IN') %></div>
+                                    <div style="font-weight: 800; color: var(--secondary-color); font-size: 0.95rem;">
+                                        ₹<%= (product.price || 0).toLocaleString('en-IN') %>
+                                    </div>
+                                    <% if (product.originalPrice && product.originalPrice > product.price) { %>
+                                        <div style="display: flex; gap: 0.4rem; align-items: center; font-size: 0.75rem;">
+                                            <span style="text-decoration: line-through; color: var(--text-muted);">₹<%= product.originalPrice.toLocaleString('en-IN') %></span>
+                                            <span style="color: #059669; font-weight: 700;"><%= product.discount || '' %></span>
+                                        </div>
+                                    <% } %>
                                 </td>
+
+                                <!-- Stock Status -->
                                 <td>
                                     <% if (product.countInStock > 10) { %>
-                                        <span style="display: inline-flex; align-items: center; gap: 0.4rem; color: #10b981; font-weight: 700; font-size: 0.85rem; padding: 0.35rem 0.75rem; background: #ecfdf5; border-radius: 9999px;">
-                                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
-                                            In Stock (<%= product.countInStock %>)
+                                        <span class="badge badge-stock-in">
+                                            <span class="badge-dot" style="background: #10b981;"></span>
+                                            <%= product.countInStock %> In Stock
                                         </span>
                                     <% } else if (product.countInStock > 0) { %>
-                                        <span style="display: inline-flex; align-items: center; gap: 0.4rem; color: #f59e0b; font-weight: 700; font-size: 0.85rem; padding: 0.35rem 0.75rem; background: #fffbeb; border-radius: 9999px;">
-                                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b;"></span>
-                                            Low Stock (<%= product.countInStock %>)
+                                        <span class="badge badge-stock-low">
+                                            <span class="badge-dot" style="background: #f59e0b;"></span>
+                                            <%= product.countInStock %> Low Stock
                                         </span>
                                     <% } else { %>
-                                        <span style="display: inline-flex; align-items: center; gap: 0.4rem; color: #ef4444; font-weight: 700; font-size: 0.85rem; padding: 0.35rem 0.75rem; background: #fef2f2; border-radius: 9999px;">
-                                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #ef4444;"></span>
+                                        <span class="badge badge-stock-out">
+                                            <span class="badge-dot" style="background: #ef4444;"></span>
                                             Out of Stock
                                         </span>
                                     <% } %>
                                 </td>
-                                <td>
-                                    <span style="text-transform: capitalize; font-weight: 600; font-size: 0.85rem; color: var(--text-muted);">
-                                        <%= product.category %>
-                                    </span>
-                                </td>
-                                <td style="text-align: right;">
-                                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                                        <a href="/admin/products/edit/<%= product._id %>" class="btn" style="padding: 0.6rem; background: #f1f5f9; color: var(--text-muted);">
-                                            <i class="fas fa-edit"></i>
+
+                                <!-- Actions -->
+                                <td style="text-align: right; padding-right: 1.5rem;">
+                                    <div style="display: flex; gap: 0.4rem; justify-content: flex-end;">
+                                        <a href="/admin/products/edit/<%= product._id %>" class="btn btn-sm btn-secondary btn-icon" title="Edit Product">
+                                            <i class="fas fa-pen-to-square"></i>
                                         </a>
-                                        <a href="/admin/products/delete/<%= product._id %>" class="btn" style="padding: 0.6rem; background: #fee2e2; color: #ef4444;" onclick="return confirm('Delete this product permanently?')">
-                                            <i class="fas fa-trash"></i>
+                                        <a href="/admin/products/delete/<%= product._id %>" class="btn btn-sm btn-danger btn-icon" title="Delete Product" onclick="return confirm('Are you sure you want to delete <%= product.name %>? This action cannot be undone.')">
+                                            <i class="fas fa-trash-can"></i>
                                         </a>
                                     </div>
                                 </td>
@@ -80,13 +181,15 @@
                         <% }) %>
                     <% } else { %>
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 5rem 1rem;">
-                                <div style="width: 80px; height: 80px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                                    <i class="fas fa-box-open" style="font-size: 2.5rem; color: var(--border-color);"></i>
+                            <td colspan="6" style="text-align: center; padding: 4.5rem 1rem;">
+                                <div style="width: 70px; height: 70px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+                                    <i class="fas fa-box-open" style="font-size: 2.25rem; color: #cbd5e1;"></i>
                                 </div>
-                                <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 0.5rem;">No products found</h3>
-                                <p style="color: var(--text-muted);">Your inventory is currently empty.</p>
-                                <a href="/admin/products/add" class="btn btn-primary" style="margin-top: 1.5rem;">Add Your First Product</a>
+                                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 0.35rem;">No products found</h3>
+                                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Try adjusting your search criteria or add new inventory.</p>
+                                <a href="/admin/products/add" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add New Product
+                                </a>
                             </td>
                         </tr>
                     <% } %>

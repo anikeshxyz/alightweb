@@ -68,17 +68,17 @@ export const sendOrderReceiptEmail = async (userEmail, userName, order) => {
         const shippingAddress = order.shippingAddress || {};
 
         const mailOptions = {
-            from: `"Bal Jyoti" <${process.env.EMAIL_USER}>`,
+            from: `"Alight International" <${process.env.EMAIL_USER}>`,
             to: userEmail,
             subject: `Order Confirmation - #${orderId}`,
             html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
                 <div style="text-align: center; padding: 20px 0;">
-                    <h1 style="color: #1a5b3a; margin: 0;">Bal Jyoti</h1>
-                    <p style="color: #666; margin-top: 5px;">Your order has been received and is being processed!</p>
+                    <h1 style="color: #0284c7; margin: 0; font-size: 26px;">Alight International</h1>
+                    <p style="color: #666; margin-top: 5px;">Your order has been confirmed and is being processed for global shipment.</p>
                 </div>
-                <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                    <h3 style="margin-top: 0; color: #1a5b3a;">Order Summary</h3>
+                <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                    <h3 style="margin-top: 0; color: #0f172a;">Order Summary</h3>
                     <p style="margin: 5px 0;"><strong>Order ID:</strong> #${orderId}</p>
                     <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date(order.createdAt ?? Date.now()).toLocaleDateString()}</p>
                     <h4 style="margin-bottom: 5px; margin-top: 15px;">Shipping Address:</h4>
@@ -90,7 +90,7 @@ export const sendOrderReceiptEmail = async (userEmail, userName, order) => {
                 </div>
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                     <thead>
-                        <tr style="background-color: #1a5b3a; color: white;">
+                        <tr style="background-color: #0f172a; color: white;">
                             <th style="padding: 10px; text-align: left; border-radius: 4px 0 0 0;">Item</th>
                             <th style="padding: 10px; text-align: right; border-radius: 0 4px 0 0;">Price</th>
                         </tr>
@@ -100,15 +100,15 @@ export const sendOrderReceiptEmail = async (userEmail, userName, order) => {
                         <tr>
                             <td style="padding: 15px 10px 10px; text-align: right; border-top: 2px solid #ddd;"><strong>Total Amount:</strong></td>
                             <td style="padding: 15px 10px 10px; text-align: right; border-top: 2px solid #ddd;">
-                                <strong style="font-size: 18px; color: #1a5b3a;">₹${totalAmount.toFixed(2)}</strong>
+                                <strong style="font-size: 18px; color: #0284c7;">₹${totalAmount.toFixed(2)}</strong>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div style="text-align: center; padding: 20px; color: #888; font-size: 12px;">
-                    <p style="margin: 0;">Thank you for shopping with us!</p>
-                    <p style="margin: 5px 0;">Bal Jyoti Design | Empowering Artisans</p>
-                    <p style="margin: 0;">If you have any questions, reply to this email.</p>
+                    <p style="margin: 0;">Thank you for partnering with Alight International.</p>
+                    <p style="margin: 5px 0;">Alight International | Global Trade & Enterprise Solutions</p>
+                    <p style="margin: 0;">For inquiries, contact support at contact@alightinternational.com</p>
                 </div>
             </div>
             `,
@@ -165,36 +165,36 @@ export const sendEmailOtp = async (userEmail, userName, otp) => {
         const transporter = getTransporter();
 
         const mailOptions = {
-            from: `"Bal Jyoti" <${process.env.EMAIL_USER}>`,
+            from: `"Alight International" <${process.env.EMAIL_USER}>`,
             to: userEmail,
-            subject: `${otp} is your Bal Jyoti email verification code`,
+            subject: `${otp} is your Alight International email verification code`,
             html: `
             <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; color: #333;">
                 <div style="text-align: center; padding: 30px 0 20px;">
-                    <h1 style="color: #1a5b3a; margin: 0; font-size: 28px;">Bal Jyoti</h1>
-                    <p style="color: #888; margin-top: 6px; font-size: 14px;">Empowering Artisans</p>
+                    <h1 style="color: #0284c7; margin: 0; font-size: 26px;">Alight International</h1>
+                    <p style="color: #888; margin-top: 6px; font-size: 13px;">Global Trade & Enterprise Solutions</p>
                 </div>
 
-                <div style="background: #f9f9f9; border-radius: 16px; padding: 36px 32px; text-align: center; margin-bottom: 24px;">
-                    <p style="font-size: 16px; color: #555; margin: 0 0 8px;">Hi ${userName ?? 'there'},</p>
-                    <p style="font-size: 15px; color: #555; margin: 0 0 28px; line-height: 1.6;">
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 36px 32px; text-align: center; margin-bottom: 24px;">
+                    <p style="font-size: 16px; color: #334155; margin: 0 0 8px;">Hi ${userName ?? 'there'},</p>
+                    <p style="font-size: 14px; color: #64748b; margin: 0 0 28px; line-height: 1.6;">
                         Use the code below to verify your email address.<br/>
                         This code expires in <strong>10 minutes</strong>.
                     </p>
 
-                    <div style="display: inline-block; background: #fff; border: 2px dashed #1a5b3a;
+                    <div style="display: inline-block; background: #fff; border: 2px dashed #0284c7;
                                 border-radius: 12px; padding: 20px 40px; margin: 0 auto;">
-                        <span style="font-size: 42px; font-weight: 900; letter-spacing: 14px; color: #1a5b3a;
+                        <span style="font-size: 40px; font-weight: 900; letter-spacing: 12px; color: #0284c7;
                                      font-family: 'Courier New', monospace;">${otp}</span>
                     </div>
 
-                    <p style="font-size: 12px; color: #aaa; margin-top: 24px; margin-bottom: 0;">
+                    <p style="font-size: 12px; color: #94a3b8; margin-top: 24px; margin-bottom: 0;">
                         If you didn't request this, you can safely ignore this email.
                     </p>
                 </div>
 
-                <div style="text-align: center; color: #bbb; font-size: 12px; padding-bottom: 20px;">
-                    <p style="margin: 0;">Bal Jyoti Design | Empowering Artisans</p>
+                <div style="text-align: center; color: #94a3b8; font-size: 12px; padding-bottom: 20px;">
+                    <p style="margin: 0;">Alight International | Global Operations</p>
                 </div>
             </div>
             `,

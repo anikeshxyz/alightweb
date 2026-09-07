@@ -15,7 +15,7 @@ boots both: Express on `5001` (internal) and Next on `$PORT` (public). No API co
 1. Create a free **M0** cluster at <https://cloud.mongodb.com>.
 2. **Database Access** → add a user + password.
 3. **Network Access** → allow `0.0.0.0/0` (Railway dyno IPs are dynamic; can't pin them).
-4. **Connect → Drivers** → copy the `mongodb+srv://USER:PASS@cluster0.xxxxx.mongodb.net/baljyoti?retryWrites=true&w=majority` string. Note the `/baljyoti` db name.
+4. **Connect → Drivers** → copy the `mongodb+srv://USER:PASS@cluster0.xxxxx.mongodb.net/alightintl?retryWrites=true&w=majority` string. Note the `/alightintl` db name.
 
 ## 2. Create the Railway service
 

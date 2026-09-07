@@ -4,53 +4,62 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ROUTES } from "@/lib/routes";
-import { ArrowRight, Sparkles, Box, Hammer, Shirt, Paintbrush } from "lucide-react";
+import { ArrowRight, Sparkles, Box, LayoutGrid, Package, Bath, Shirt, Wrench } from "lucide-react";
 
 const collections = [
     {
-        id: "rugs",
-        name: "Handwoven Rugs",
-        description: "Experience the warmth of traditional craftsmanship with our exquisite handwoven rugs.",
-        image: "/images/jute_rug.png",
-        count: "12 Items",
+        id: "modular-kitchen",
+        name: "Modular Kitchen Accessories",
+        description: "Pantry pull-outs, heavy-duty kitchen baskets, spice racks, bottle pull-outs, and corner units.",
+        image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=80",
+        count: "11 Sub-Lines",
+        icon: LayoutGrid,
+        color: "bg-sky-600"
+    },
+    {
+        id: "kitchen-storage",
+        name: "Kitchen Storage & Organization",
+        description: "Wall-mount shelves, modular organizers, stainless steel trays, pull-out systems, and magic corners.",
+        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80",
+        count: "5 Sub-Lines",
         icon: Box,
-        color: "bg-amber-500"
+        color: "bg-blue-600"
     },
     {
-        id: "bamboo",
-        name: "Bamboo Creations",
-        description: "Sustainable and stylish bamboo products for eco-friendly living.",
-        image: "/images/bamboo_spotlight.png",
-        count: "8 Items",
-        icon: Hammer,
-        color: "bg-emerald-500"
+        id: "tabletop-cutlery",
+        name: "Cutlery & Tabletop Products",
+        description: "Spoon stands, cup tree holders, napkin holders, rotating cutlery stands, fruit bowls and stands.",
+        image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&auto=format&fit=crop&q=80",
+        count: "6 Sub-Lines",
+        icon: Package,
+        color: "bg-indigo-600"
     },
     {
-        id: "moonj-sikki",
-        name: "Moonj & Sikki Crafts",
-        description: "Golden grass weaves that tell stories of ancient art.",
-        image: "/images/moonj_sikki.png",
-        count: "Coming Soon",
-        icon: Sparkles,
-        color: "bg-yellow-500"
+        id: "bathroom-fixtures",
+        name: "Bathroom Fixtures & Accessories",
+        description: "SS 304 folding towel racks, corner shower caddies, dual soap dishes, and heavy-duty robe hook strips.",
+        image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80",
+        count: "4 Sub-Lines",
+        icon: Bath,
+        color: "bg-teal-600"
     },
     {
-        id: "painting",
-        name: "Folk Paintings",
-        description: "Vibrant Madhubani and tribal art to adorn your walls.",
-        image: "/images/folk_painting.png",
-        count: "Coming Soon",
-        icon: Paintbrush,
-        color: "bg-blue-500"
-    },
-    {
-        id: "apparel",
-        name: "Ethereal Apparels",
-        description: "A fusion of tradition and contemporary fashion.",
-        image: "/images/ethereal_apparels.png",
-        count: "New Arrivals",
+        id: "wardrobe-accessories",
+        name: "Wardrobe Accessories & Storage",
+        description: "Stainless-steel sliding trouser racks, tie/belt pull-outs, and deep wire wardrobe drawers.",
+        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80",
+        count: "3 Sub-Lines",
         icon: Shirt,
-        color: "bg-rose-500"
+        color: "bg-cyan-600"
+    },
+    {
+        id: "wire-products",
+        name: "Wire Products & Home Furnishings",
+        description: "Heavy-duty 4-tier mobile wire racks, under-desk cable management, and stackable wire baskets.",
+        image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&auto=format&fit=crop&q=80",
+        count: "3 Sub-Lines",
+        icon: Wrench,
+        color: "bg-slate-700"
     }
 ];
 
@@ -59,37 +68,36 @@ const containerVariants = {
     show: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.15
+            staggerChildren: 0.1
         }
     }
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, scale: 0.95, y: 30 },
-    show: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
+    hidden: { opacity: 0, scale: 0.96, y: 20 },
+    show: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
 };
 
 export default function CollectionsPage() {
     return (
-        <div className="bg-[#fcf8f3] min-h-screen">
+        <div className="bg-slate-50 min-h-screen">
             {/* ── Hero Header ────────────────────────────────────────── */}
-            <section className="relative pt-32 pb-20 px-6 text-center overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-radial from-amber-100/50 to-transparent opacity-60 blur-3xl pointer-events-none" />
+            <section className="relative pt-32 pb-16 px-6 text-center overflow-hidden">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-sky-100/50 opacity-60 blur-3xl pointer-events-none" />
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1 }}
-                    className="relative z-10"
+                    transition={{ duration: 0.8 }}
+                    className="relative z-10 max-w-3xl mx-auto"
                 >
-                    <span className="inline-block px-3 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-[0.4em] rounded-full mb-6">
-                        Curated Heritage
+                    <span className="inline-block px-3.5 py-1 bg-sky-100 text-sky-700 text-xs font-bold uppercase tracking-[0.3em] rounded-full mb-6">
+                        Product Catalogs
                     </span>
-                    <h1 className="text-5xl md:text-7xl font-serif font-bold text-gray-900 mb-6 tracking-tight">
-                        Our <span className="text-amber-600 italic">Collections</span>
+                    <h1 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6 tracking-tight">
+                        Commercial <span className="text-sky-600">Product Lines</span>
                     </h1>
-                    <p className="text-gray-500 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed">
-                        Discover our diverse range of indigenous products, each handcrafted 
-                        with love and keeping sustainability at heart.
+                    <p className="text-slate-600 max-w-2xl mx-auto text-base md:text-lg font-normal leading-relaxed">
+                        Explore Alight International's precision stainless-steel modular kitchen solutions, storage systems, bathroom fixtures, and wire home furnishings.
                     </p>
                 </motion.div>
             </section>
@@ -100,79 +108,57 @@ export default function CollectionsPage() {
                     variants={containerVariants}
                     initial="hidden"
                     animate="show"
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
-                    {collections.map((collection) => (
-                        <motion.div key={collection.id} variants={itemVariants}>
-                            <Link
-                                href={`${ROUTES.PRODUCT_CATEGORIES}/${collection.id}`}
-                                className="group block relative h-[250px] sm:h-[300px] md:h-[500px] w-full rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl shadow-gray-200/50"
+                    {collections.map((item) => {
+                        const IconComponent = item.icon;
+                        return (
+                            <motion.div
+                                key={item.id}
+                                variants={itemVariants}
+                                whileHover={{ y: -6 }}
+                                className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col"
                             >
-                                {/* Image Layer */}
-                                <div className="absolute inset-0 z-0">
+                                <div className="relative h-64 overflow-hidden">
                                     <Image
-                                        src={collection.image}
-                                        alt={collection.name}
+                                        src={item.image}
+                                        alt={item.name}
                                         fill
-                                        className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110 group-hover:rotate-1"
+                                        className="object-cover group-hover:scale-105 transition-transform duration-700 brightness-[0.9]"
                                     />
-                                    {/* Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-90" />
-                                </div>
-
-                                {/* Content Layer */}
-                                <div className="absolute inset-0 z-10 p-6 md:p-10 flex flex-col justify-end text-white">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className={`p-1.5 md:p-2 rounded-xl ${collection.color} text-white shadow-lg`}>
-                                            <collection.icon className="w-3.5 h-3.5 md:w-[18px] md:h-[18px]" />
-                                        </div>
-                                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80">
-                                            {collection.count}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent" />
+                                    
+                                    <div className="absolute top-4 left-4">
+                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-900/80 backdrop-blur-md text-white text-[11px] font-semibold rounded-full border border-white/10">
+                                            <IconComponent size={12} className="text-sky-400" />
+                                            {item.count}
                                         </span>
                                     </div>
                                     
-                                    <h3 className="text-3xl md:text-4xl font-serif font-bold mb-4 transform transition-transform duration-500 group-hover:-translate-y-2">
-                                        {collection.name}
-                                    </h3>
-                                    
-                                    <p className="text-gray-200 text-sm leading-relaxed mb-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-100 line-clamp-3">
-                                        {collection.description}
-                                    </p>
-                                    
-                                    <div className="flex items-center gap-3 text-white font-bold text-xs uppercase tracking-widest opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 delay-200">
-                                        Explore Collection 
-                                        <div className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-gray-900 transition-all">
-                                            <ArrowRight className="w-3.5 h-3.5 md:w-[14px] md:h-[14px]" />
-                                        </div>
+                                    <div className="absolute bottom-4 left-4 right-4">
+                                        <h3 className="text-xl font-bold text-white leading-tight drop-shadow-sm">
+                                            {item.name}
+                                        </h3>
                                     </div>
                                 </div>
 
-                                {/* Glass decorative border on hover */}
-                                <div className="absolute inset-4 border border-white/10 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                            </Link>
-                        </motion.div>
-                    ))}
+                                <div className="p-6 flex-1 flex flex-col justify-between">
+                                    <p className="text-slate-500 text-sm leading-relaxed mb-6 font-normal">
+                                        {item.description}
+                                    </p>
+                                    
+                                    <Link
+                                        href={`${ROUTES.PRODUCT_CATEGORIES}/${item.id}`}
+                                        className="inline-flex items-center justify-between w-full px-5 py-3.5 rounded-xl bg-slate-50 hover:bg-sky-600 text-slate-800 hover:text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 group/btn"
+                                    >
+                                        <span>View Products</span>
+                                        <ArrowRight size={16} className="transform group-hover/btn:translate-x-1 transition-transform" />
+                                    </Link>
+                                </div>
+                            </motion.div>
+                        );
+                    })}
                 </motion.div>
-            </section>
-
-            {/* ── Bottom Section ────────────────────────────────────────── */}
-            <section className="bg-gray-900 py-24 px-6 text-center">
-                <div className="max-w-4xl mx-auto">
-                    <h2 className="text-3xl md:text-5xl font-serif font-bold text-white mb-8">
-                        Can't find what you're looking for?
-                    </h2>
-                    <p className="text-white/60 text-lg mb-12 max-w-2xl mx-auto leading-relaxed">
-                        We also accept customized bulk orders for corporate gifting, weddings, 
-                        and interior designers. Every custom piece sustains our artisan community.
-                    </p>
-                    <Link 
-                        href={ROUTES.BULK_ORDERS}
-                        className="inline-flex items-center gap-3 px-12 py-5 bg-amber-500 text-gray-900 font-bold rounded-full hover:bg-amber-400 transition-all transform hover:scale-105 active:scale-95"
-                    >
-                        Bulk Order Inquiry
-                        <ArrowRight size={18} />
-                    </Link>
-                </div>
             </section>
         </div>
     );

@@ -4,58 +4,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Identity - Admin Portal</title>
+    <title><%= locals.title || 'Verify Identity' %> - Admin Portal</title>
     <link rel="stylesheet" href="/css/admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body class="auth-page">
     <div class="auth-card">
         <div class="auth-header">
-            <div class="auth-icon" style="background: var(--primary-light); color: var(--primary-color);">
-                <i class="fas fa-shield-halved"></i>
+            <div class="auth-icon" style="background: #ecfdf5; color: var(--primary-color);">
+                <i class="fas fa-lock"></i>
             </div>
             <h2 class="auth-title">Two-Step Verification</h2>
-            <p class="auth-subtitle">Confirm the code sent to your email.</p>
+            <p class="auth-subtitle">
+                Enter the 6-digit code for <b><%= email %></b>
+            </p>
         </div>
 
-        <% if (error) { %>
-            <div class="error-alert">
-                <i class="fas fa-exclamation-circle"></i>
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger">
+                <i class="fas fa-circle-exclamation"></i>
                 <span><%= error %></span>
             </div>
         <% } %>
 
-        <% if (dev_otp) { %>
-            <div style="background: rgba(245, 158, 11, 0.1); border: 1px dashed var(--accent-color); color: var(--accent-color); padding: 1rem; border-radius: 1rem; font-size: 0.85rem; margin-bottom: 2rem; text-align: center;">
-                <i class="fas fa-bug" style="margin-right: 5px;"></i> <b>DEV_MODE:</b> Verification code is <code style="font-weight: 800; font-size: 1.1rem; margin-left: 5px;"><%= dev_otp %></code>
+        <% if (typeof dev_otp !== 'undefined' && dev_otp) { %>
+            <div style="background: #fffbeb; border: 1.5px dashed var(--accent-color); color: #92400e; padding: 1rem 1.25rem; border-radius: 1rem; font-size: 0.88rem; margin-bottom: 1.75rem; text-align: center;">
+                <i class="fas fa-key" style="color: var(--accent-color); margin-right: 4px;"></i>
+                <span>Your Verification Code:</span>
+                <div style="font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: 800; color: var(--secondary-color); letter-spacing: 0.25rem; margin-top: 0.35rem;">
+                    <%= dev_otp %>
+                </div>
             </div>
         <% } %>
 
         <form action="<%= actionUrl %>" method="POST">
             <div class="form-group">
-                <label>6-Digit Verification Code</label>
+                <label style="text-align: center; display: block; margin-bottom: 0.75rem;">Enter 6-Digit Code</label>
                 <div style="position: relative;">
-                    <i class="fas fa-key" style="position: absolute; left: 1.25rem; top: 1rem; color: var(--text-muted);"></i>
-                    <input type="text" name="otp" class="form-control" required placeholder="000000" maxlength="6" 
-                        style="padding-left: 3rem; font-family: 'Space Mono', monospace; font-size: 1.25rem; letter-spacing: 0.5rem; font-weight: 700;">
+                    <input type="text" name="otp" class="form-control" required placeholder="000000" maxlength="6" autofocus
+                        value="<%= typeof dev_otp !== 'undefined' && dev_otp ? dev_otp : '' %>"
+                        style="text-align: center; font-family: 'Space Mono', monospace; font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: 800; padding: 0.85rem 1rem;">
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
-                Verify & Sign In <i class="fas fa-check-circle" style="margin-left: 8px;"></i>
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+                <span>Verify &amp; Continue</span>
+                <i class="fas fa-arrow-right"></i>
             </button>
         </form>
 
-        <div class="auth-footer">
-            <span style="color: var(--text-muted); font-size: 0.95rem;">Mistake in email?</span>
-            <a href="/admin/login" class="auth-link" style="margin-left: 0.5rem;">Start over</a>
+        <div class="auth-footer" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="<%= typeof resendUrl !== 'undefined' ? resendUrl : '#' %>" class="auth-link" style="font-size: 0.88rem;">
+                <i class="fas fa-rotate"></i> Resend Code
+            </a>
+            <a href="/admin/login" style="color: var(--text-muted); font-size: 0.88rem; font-weight: 600;">
+                Cancel &amp; Sign In
+            </a>
         </div>
     </div>
-
-    <!-- Decorative Elements -->
-    <div style="position: fixed; top: -10%; right: -10%; width: 40%; height: 40%; background: radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 70%); z-index: -1;"></div>
-    <div style="position: fixed; bottom: -10%; left: -10%; width: 40%; height: 40%; background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%); z-index: -1;"></div>
 </body>
-
 </html>

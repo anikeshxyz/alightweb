@@ -1,13 +1,15 @@
 "use client";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
-  Search, User, ShoppingCart, ChevronDown,
-  Heart, LogOut, Menu, X, Sparkles, Globe,
+  Search, User, ShoppingCart, ChevronDown, Heart,
+  LogOut, Menu, X, Globe, Sparkles, Phone, FileText,
+  ShieldCheck, LayoutGrid, ArrowRight, CheckCircle2,
+  Package, Box, Bath, Shirt, Wrench, Layers, Award,
+  Compass, ExternalLink, SlidersHorizontal, Flame, Lock
 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
-
 import Link from "next/link";
-import Image from "next/image";
+import BrandLogo from "@/components/ui/BrandLogo";
 import { useCurrency } from "@/context/CurrencyContext";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -15,30 +17,78 @@ import { useWishlist } from "@/context/WishlistContext";
 import { ROUTES, NAV_LINKS } from "@/lib/routes";
 
 const REGIONS = [
-  { name: "India Region", code: "INR", symbol: "₹" },
-  { name: "Worldwide", code: "USD", symbol: "$" },
+  { name: "India (INR)", code: "INR", symbol: "₹" },
+  { name: "United States (USD)", code: "USD", symbol: "$" },
 ];
 
-// Brand palette pulled from the logo itself — green + warm gold —
-// instead of the generic blue the rest of the nav previously used.
-const BRAND = {
-  green: "#2d6a2d",
-  greenSoft: "rgba(45,106,45,0.08)",
-  greenSofter: "rgba(45,106,45,0.05)",
-  gold: "#a9762f",
+const CATEGORY_META = {
+  "Modular Kitchen": {
+    icon: LayoutGrid,
+    desc: "Engineered SS 304 wire pull-outs, corner carousels & heavy baskets",
+    badge: "Flagship Line",
+    highlightImg: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80",
+    features: ["Heavy-Gauge SS 304", "Smooth Soft-Close", "Zero-Rust Finish"],
+  },
+  "Kitchen Storage": {
+    icon: Box,
+    desc: "Modular wall shelves, sliding drawers & high-capacity pantry racks",
+    badge: "Bestseller",
+    highlightImg: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80",
+    features: ["Max Space Efficiency", "Quick Installation", "Precision Welded"],
+  },
+  "Tabletop & Cutlery": {
+    icon: Package,
+    desc: "Architectural spoon stands, cup holders, tissue & cutlery organizers",
+    badge: "New Release",
+    highlightImg: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80",
+    features: ["Mirror Chrome Luster", "Countertop Ready", "Anti-Scratch Base"],
+  },
+  "Bathroom Fixtures": {
+    icon: Bath,
+    desc: "Commercial-grade SS folding towel racks & shower corner caddies",
+    badge: "SS 304 Certified",
+    highlightImg: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
+    features: ["100% Moisture Proof", "Hotel Luxury Grade", "Concealed Mounts"],
+  },
+  "Wardrobe Accessories": {
+    icon: Shirt,
+    desc: "Soft-close sliding trouser racks, tie organizers & pull-out baskets",
+    badge: "Executive",
+    highlightImg: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80",
+    features: ["Full Extension Slides", "Velvet Non-Slip Lining", "Modular Fit"],
+  },
+  "Wire Products": {
+    icon: Wrench,
+    desc: "Heavy-duty wire storage racks & under-desk utility wire baskets",
+    badge: "Industrial Strength",
+    highlightImg: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
+    features: ["High Load Capacity", "Multi-Utility Design", "Reinforced Mesh"],
+  },
 };
 
+const POPULAR_SEARCH_TAGS = [
+  "Pantry Pull-Outs",
+  "Plain Baskets",
+  "Spice Racks",
+  "Corner Units",
+  "Folding Towel Rack",
+  "Cutlery Stands",
+  "Cylinder Trolley",
+];
+
 export default function Navigation() {
-  const [dropdown, setDropdown] = useState(null);
+  const [activeMegaMenu, setActiveMegaMenu] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileDropdown, setMobileDropdown] = useState(null);
+  const [mobileExpandedCat, setMobileExpandedCat] = useState(null);
   const [currencyOpen, setCurrencyOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
+  const searchRef = useRef(null);
 
   const { currency, changeCurrency } = useCurrency();
   const { getCartCount } = useCart();
@@ -46,82 +96,64 @@ export default function Navigation() {
   const { wishlistTotal } = useWishlist();
   const cartCount = getCartCount();
 
-  const handleLogoClick = () => {
-    // Scroll to the very top smoothly on every logo click.
-    // Next.js Link handles the actual navigation — no refresh needed.
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const isActive = (href) =>
-    href === ROUTES.HOME ? pathname === href : pathname === href || pathname?.startsWith(`${href}/`);
-
-  const searchRef = useRef(null);
-
-  // Scroll-aware shadow / blur & auto-close menus
+  // Scroll detection
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 8);
-      if (window.scrollY > 50) {
-        setMobileMenuOpen(false);
-        setSearchOpen(false);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      if (window.scrollY > 80) {
+        setActiveMegaMenu(null);
       }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Focus search input when opened
+  // Keyboard shortcut for search (Ctrl+K / Cmd+K)
   useEffect(() => {
-    if (searchOpen) searchRef.current?.focus();
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+      if (e.key === "Escape") {
+        setSearchOpen(false);
+        setActiveMegaMenu(null);
+        setUserDropdownOpen(false);
+        setCurrencyOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Search input auto-focus
+  useEffect(() => {
+    if (searchOpen) {
+      setTimeout(() => searchRef.current?.focus(), 60);
+    }
   }, [searchOpen]);
 
-  // Close dropdowns on outside click for currency
+  // Click outside listener for dropdowns
   useEffect(() => {
-    if (!currencyOpen) return;
-    const handler = () => setCurrencyOpen(false);
-    document.addEventListener("click", handler);
-    return () => document.removeEventListener("click", handler);
-  }, [currencyOpen]);
-
-  // Escape closes search / mobile menu — small but real usability win
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.key !== "Escape") return;
-      setSearchOpen(false);
-      setMobileMenuOpen(false);
-      setCurrencyOpen(false);
+    const handleClickOutside = (e) => {
+      if (!e.target.closest("#currency-dropdown-btn") && !e.target.closest("#currency-dropdown-menu")) {
+        setCurrencyOpen(false);
+      }
+      if (!e.target.closest("#user-dropdown-btn") && !e.target.closest("#user-dropdown-menu")) {
+        setUserDropdownOpen(false);
+      }
     };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Auto-close menu and search when navigating
+  // Route changes close dropdowns & drawers
   useEffect(() => {
     setMobileMenuOpen(false);
+    setActiveMegaMenu(null);
     setSearchOpen(false);
+    setUserDropdownOpen(false);
   }, [pathname]);
-
-  // Little "pop" cue whenever cart or wishlist counts change
-  const [cartPop, setCartPop] = useState(false);
-  const [wishPop, setWishPop] = useState(false);
-  const prevCart = useRef(cartCount);
-  const prevWish = useRef(wishlistTotal);
-  useEffect(() => {
-    if (cartCount !== prevCart.current) {
-      setCartPop(true);
-      prevCart.current = cartCount;
-      const t = setTimeout(() => setCartPop(false), 400);
-      return () => clearTimeout(t);
-    }
-  }, [cartCount]);
-  useEffect(() => {
-    if (wishlistTotal !== prevWish.current) {
-      setWishPop(true);
-      prevWish.current = wishlistTotal;
-      const t = setTimeout(() => setWishPop(false), 400);
-      return () => clearTimeout(t);
-    }
-  }, [wishlistTotal]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -132,451 +164,601 @@ export default function Navigation() {
     }
   };
 
-  const titleCase = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  const isActive = (href) => {
+    if (href === ROUTES.HOME) return pathname === href;
+    return pathname === href || pathname?.startsWith(`${href}/`);
+  };
 
   return (
     <>
-      {/* ── Decorative top border ─────────────────────────────── */}
-      <div
-        className="w-full"
-        style={{
-          height: "24px",
-          backgroundImage: "url('/images/border_icon.png')",
-          backgroundRepeat: "repeat-x",
-          backgroundSize: "auto 100%",
-          backgroundPosition: "center",
-          backgroundColor: "#f5f0e8",
-        }}
-      />
+      {/* ── 1. Top Utility Ribbon ────────────────────────────────────── */}
+      <div className="w-full bg-slate-950 text-slate-300 text-xs py-2 px-4 sm:px-8 border-b border-slate-800/80">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          
+          {/* Left: Manufacturing & Certified Trust Badges */}
+          <div className="flex items-center gap-3 md:gap-5 text-[11px]">
+            <div className="inline-flex items-center gap-2 font-semibold text-red-400">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+              <span className="tracking-wide">ALIGHT™ Direct Manufacturing</span>
+            </div>
+            
+            <span className="text-slate-700 hidden sm:inline">•</span>
+            
+            <div className="text-slate-400 hidden sm:flex items-center gap-1.5 font-medium">
+              <ShieldCheck size={13} className="text-emerald-400" />
+              <span>100% SS 304 Grade Stainless Steel</span>
+            </div>
+          </div>
 
-      {/* ── Sticky Nav ────────────────────────────────────────── */}
-      <div
-        className={`
-          w-full sticky top-0 left-0 right-0 z-50
-          transition-all duration-300
-          ${scrolled ? "shadow-lg bg-white/95 backdrop-blur-md" : "shadow-sm bg-white"}
-        `}
-        style={{ borderBottom: scrolled ? "1px solid rgba(45,106,45,0.1)" : "1px solid transparent" }}
-      >
-        {/* ── Search overlay (click-away backdrop + centered pill) ──── */}
-        {searchOpen && (
-          <div
-            className="fixed inset-0 top-0 z-40"
-            style={{ background: "rgba(20,20,15,0.25)", animation: "fadeIn 0.15s ease both" }}
-            onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
-          />
-        )}
-        <div
-          className={`
-            relative z-50 overflow-hidden transition-all duration-300 ease-in-out
-            ${searchOpen ? "max-h-24 py-3 border-b border-gray-100" : "max-h-0"}
-          `}
-        >
-          <form
-            onSubmit={handleSearchSubmit}
-            onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-3 px-5 py-2.5 max-w-xl mx-auto bg-white rounded-full shadow-md border border-gray-100 mt-1"
-            style={{ boxShadow: "0 8px 30px rgba(45,106,45,0.08)" }}
-          >
-            <Search className="w-4.5 h-4.5 shrink-0" style={{ color: BRAND.green }} />
-            <input
-              ref={searchRef}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search products, categories…"
-              className="flex-1 outline-none text-gray-700 text-sm placeholder-gray-400 bg-transparent"
-            />
-            <button
-              type="button"
-              onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-              aria-label="Close search"
+          {/* Right: Helpline, Quick Links & Currency Selector */}
+          <div className="flex items-center gap-4 md:gap-6 text-[11px]">
+            <Link
+              href={ROUTES.CONTACT}
+              className="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 font-medium"
             >
-              <X className="w-4 h-4" />
-            </button>
-          </form>
-        </div>
+              <Phone size={12} className="text-red-400" />
+              <span className="hidden md:inline">Helpline:</span>
+              <span>+91 98765 43210</span>
+            </Link>
 
-        {/* ── Main Nav Row ──────────────────────────────────── */}
-        <nav className="flex items-center justify-between px-4 md:px-[20px] py-1.5 relative">
+            <span className="text-slate-700">•</span>
 
-          {/* Responsive Logo */}
-          <Link
-            href={ROUTES.HOME}
-            onClick={handleLogoClick}
-            className="flex items-center gap-2 md:gap-3 shrink-0 group transition-all duration-500 ease-out logo-entrance"
-          >
-            <div className="relative transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-green-900/10 group-hover:drop-shadow-xl">
-              <Image
-                src="/images/logo.png"
-                alt="Bal Jyoti Design"
-                width={70}
-                height={28}
-                className="h-7 md:h-9 w-auto mix-blend-multiply"
-                priority
-              />
-              <Sparkles
-                className="absolute -top-1.5 -right-2.5 w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ color: BRAND.gold }}
-                strokeWidth={2}
-              />
-            </div>
-            <div className="flex flex-col leading-none transition-all duration-500 group-hover:translate-x-1">
-              <span className="text-base md:text-xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#2d6a2d] via-[#4a8a4a] to-[#2d6a2d] drop-shadow-sm animate-gradient-x">
-                Bal Jyoti
-              </span>
-              <span className="text-[7px] md:text-[10px] font-bold tracking-[0.3em] uppercase text-[#7c5a2a] opacity-80 group-hover:opacity-100 group-hover:tracking-[0.4em] transition-all duration-500">
-                Design
-              </span>
-            </div>
-          </Link>
-
-          {/* ── Desktop Nav Links (center) ─────────────────── */}
-          <ul className="hidden lg:flex items-center gap-1 xl:gap-2">
-            {NAV_LINKS.map((item) => {
-              const active = isActive(item.href);
-              return (
-                <li
-                  key={item.name}
-                  className="relative group"
-                  onMouseEnter={() => setDropdown(item.name)}
-                  onMouseLeave={() => setDropdown(null)}
-                >
-                  <div className="flex items-center gap-0.5">
-                    <Link
-                      href={item.href}
-                      aria-current={active ? "page" : undefined}
-                      aria-expanded={item.children ? dropdown === item.name : undefined}
-                      className={`
-                        relative flex items-center gap-1
-                        px-2.5 py-2
-                        text-[14px] font-medium tracking-normal normal-case
-                        rounded-md
-                        transition-all duration-200
-                        focus-visible:outline-none focus-visible:ring-2
-                        ${active ? "font-semibold" : ""}
-                      `}
-                      style={{
-                        textTransform: "none",
-                        color: active ? BRAND.green : "#374151",
-                        background: active ? BRAND.greenSoft : "transparent",
-                      }}
-                      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = BRAND.greenSofter; }}
-                      onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = "transparent"; }}
-                    >
-                      {titleCase(item.name)}
-
-                      {item.children && (
-                        <ChevronDown
-                          className="w-3 h-3 transition-transform duration-200"
-                          style={{ color: dropdown === item.name ? BRAND.green : "#9CA3AF", transform: dropdown === item.name ? "rotate(180deg)" : "none" }}
-                        />
-                      )}
-
-                      {/* Animated underline — always on for the active route, on hover otherwise */}
-                      <span
-                        className={`absolute bottom-1 left-2.5 right-2.5 h-[1.5px] rounded-full origin-left transition-transform duration-200 ${active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
-                        style={{ background: BRAND.green }}
-                      />
-                    </Link>
-                  </div>
-
-                  {/* Dropdown */}
-                  {item.children && dropdown === item.name && (
-                    <div
-                      className="absolute top-full left-0 mt-1 min-w-[200px] bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50"
-                      style={{ animation: "fadeSlideDown 0.15s ease both" }}
-                    >
-                      <div className="absolute -top-1.5 left-5 w-3 h-3 bg-white border-t border-l border-gray-100 rotate-45" />
-
-                      {item.children.map((child, ci) => (
-                        <Link
-                          key={child.name}
-                          href={child.href}
-                          onClick={() => setDropdown(null)}
-                          className={`
-                            flex items-center gap-2 px-4 py-2 text-sm text-gray-700 normal-case
-                            hover:bg-[#2d6a2d]/5 transition-colors
-                            ${ci < item.children.length - 1 ? "border-b border-gray-50" : ""}
-                          `}
-                          style={{ textTransform: "none" }}
-                          onMouseEnter={(e) => { e.currentTarget.style.color = BRAND.green; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.color = ""; }}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: `${BRAND.green}66` }} />
-                          {titleCase(child.name)}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-
-          {/* ── Right Actions ──────────────────────────────── */}
-          <div className="flex items-center gap-1 sm:gap-2">
-
-            {/* Currency picker */}
-            <div className="relative hidden md:block" onClick={(e) => e.stopPropagation()}>
+            {/* Currency selector */}
+            <div className="relative">
               <button
+                id="currency-dropdown-btn"
                 onClick={() => setCurrencyOpen(!currencyOpen)}
-                aria-expanded={currencyOpen}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 text-[12px] font-medium capitalize tracking-normal text-gray-600 rounded-md transition-all focus-visible:outline-none focus-visible:ring-2"
-                onMouseEnter={(e) => { e.currentTarget.style.background = BRAND.greenSofter; e.currentTarget.style.color = BRAND.green; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = ""; }}
+                className="flex items-center gap-1.5 text-slate-300 hover:text-white font-medium transition-colors cursor-pointer py-0.5"
+                aria-label="Select Currency"
               >
-                <Globe className="w-3.5 h-3.5" strokeWidth={1.75} />
-                {(() => {
-                  const name = REGIONS.find((r) => r.code === currency)?.name || currency;
-                  return titleCase(name);
-                })()}
-                <ChevronDown className={`w-3 h-3 transition-transform ${currencyOpen ? "rotate-180" : ""}`} />
+                <Globe size={12} className="text-red-400" />
+                <span className="font-semibold">{currency}</span>
+                <ChevronDown size={10} className={`transition-transform duration-200 ${currencyOpen ? "rotate-180" : ""}`} />
               </button>
+
               {currencyOpen && (
                 <div
-                  className="absolute top-full right-0 mt-2 w-44 bg-white rounded-xl shadow-2xl border border-gray-100 py-1.5 z-50"
-                  style={{ animation: "fadeSlideDown 0.15s ease both" }}
+                  id="currency-dropdown-menu"
+                  className="absolute right-0 top-full mt-2 w-48 bg-slate-900 border border-slate-700/80 rounded-xl shadow-2xl p-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150 backdrop-blur-md"
                 >
+                  <div className="px-2.5 py-1.5 text-[10px] uppercase tracking-wider font-bold text-slate-400 border-b border-slate-800">
+                    Select Currency
+                  </div>
                   {REGIONS.map((r) => (
                     <button
                       key={r.code}
                       onClick={() => { changeCurrency(r.code); setCurrencyOpen(false); }}
-                      className="w-full text-left px-4 py-2 text-xs transition-colors flex items-center justify-between"
-                      style={currency === r.code
-                        ? { color: BRAND.green, fontWeight: 700, background: BRAND.greenSoft }
-                        : { color: "#4B5563" }}
-                      onMouseEnter={(e) => { if (currency !== r.code) e.currentTarget.style.background = "#F9FAFB"; }}
-                      onMouseLeave={(e) => { if (currency !== r.code) e.currentTarget.style.background = "transparent"; }}
+                      className={`w-full text-left px-3 py-2 text-xs rounded-lg flex items-center justify-between transition-colors mt-1 cursor-pointer ${
+                        currency === r.code ? "bg-red-600/20 text-red-400 font-bold" : "text-slate-300 hover:bg-slate-800"
+                      }`}
                     >
                       <span>{r.name}</span>
-                      <span className="text-gray-400">{r.symbol}</span>
+                      <span className="font-mono text-slate-400 font-bold">{r.symbol}</span>
                     </button>
                   ))}
                 </div>
               )}
             </div>
+          </div>
 
-            {/* Search toggle */}
-            <button
-              onClick={() => setSearchOpen(!searchOpen)}
-              aria-expanded={searchOpen}
-              aria-label="Search"
-              className="p-2 rounded-md text-gray-600 transition-all focus-visible:outline-none focus-visible:ring-2"
-              onMouseEnter={(e) => { e.currentTarget.style.background = BRAND.greenSofter; e.currentTarget.style.color = BRAND.green; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = ""; }}
-            >
-              <Search className="w-5 h-5" />
-            </button>
+        </div>
+      </div>
 
-            {/* Wishlist - Desktop Only */}
+      {/* ── 2. Main Sticky Navigation Header ─────────────────────────── */}
+      <header
+        className={`w-full sticky top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "bg-white/95 backdrop-blur-md shadow-lg shadow-slate-900/5 border-b border-slate-200/90 py-2.5"
+            : "bg-white border-b border-slate-200/80 py-3.5"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+
+          {/* ── Brand Logo ─────────────────────────────────────────── */}
+          <div className="flex items-center shrink-0">
+            <BrandLogo variant="light" size="default" />
+          </div>
+
+          {/* ── Desktop Nav Links (Interactive Mega Menus) ─────────── */}
+          <nav className="hidden xl:flex items-center gap-0.5 2xl:gap-1">
+            {NAV_LINKS.map((item) => {
+              const active = isActive(item.href);
+              const hasMega = item.children && item.children.length > 0;
+              const meta = CATEGORY_META[item.name];
+              const isMenuOpen = activeMegaMenu === item.name;
+
+              return (
+                <div
+                  key={item.name}
+                  className="relative"
+                  onMouseEnter={() => hasMega && setActiveMegaMenu(item.name)}
+                  onMouseLeave={() => setActiveMegaMenu(null)}
+                >
+                  <Link
+                    href={item.href}
+                    className={`
+                      flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-[13px] font-bold tracking-tight transition-all duration-200 relative group
+                      ${active
+                        ? "text-red-600 bg-red-50/90 shadow-xs"
+                        : "text-slate-800 hover:text-red-600 hover:bg-slate-50"}
+                    `}
+                  >
+                    <span>{item.name}</span>
+                    {hasMega && (
+                      <ChevronDown
+                        size={12}
+                        className={`transition-transform duration-200 ${
+                          isMenuOpen ? "rotate-180 text-red-600" : "text-slate-400 group-hover:text-red-600"
+                        }`}
+                      />
+                    )}
+                  </Link>
+
+                  {/* ── Desktop Mega Menu Dropdown ────────────────── */}
+                  {hasMega && isMenuOpen && (
+                    <div
+                      className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[760px] bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 z-50 animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-slate-900/5"
+                    >
+                      <div className="grid grid-cols-12 gap-6 items-stretch">
+                        
+                        {/* Left Column: Subcategory Grid (8 cols) */}
+                        <div className="col-span-8 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+                              <div className="flex items-center gap-2">
+                                {meta?.icon && (
+                                  <div className="w-6 h-6 rounded-lg bg-red-50 text-red-600 flex items-center justify-center">
+                                    <meta.icon size={14} />
+                                  </div>
+                                )}
+                                <div>
+                                  <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                                    {item.name} Categories
+                                  </span>
+                                  <span className="text-[11px] text-slate-400 ml-2 font-normal">
+                                    ({item.children.length} collections)
+                                  </span>
+                                </div>
+                              </div>
+                              <Link
+                                href={item.href}
+                                className="text-[11px] font-bold text-red-600 hover:text-red-700 flex items-center gap-1 group/all"
+                                onClick={() => setActiveMegaMenu(null)}
+                              >
+                                <span>View All</span>
+                                <ArrowRight size={12} className="group-hover/all:translate-x-0.5 transition-transform" />
+                              </Link>
+                            </div>
+
+                            <div className={`grid ${item.children.length > 6 ? "grid-cols-2" : "grid-cols-2"} gap-2`}>
+                              {item.children.map((sub) => (
+                                <Link
+                                  key={sub.name}
+                                  href={sub.href}
+                                  onClick={() => setActiveMegaMenu(null)}
+                                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-red-600 hover:bg-red-50/70 transition-all duration-200 group/sub border border-transparent hover:border-red-100"
+                                >
+                                  <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover/sub:bg-red-500 group-hover/sub:scale-125 transition-all shrink-0" />
+                                  <span className="line-clamp-1">{sub.name}</span>
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Category trust bar at bottom of menu */}
+                          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                            <span className="flex items-center gap-1">
+                              <ShieldCheck size={12} className="text-emerald-500" />
+                              SS 304 Nickel-Chrome Guarantee
+                            </span>
+                            <Link
+                              href={ROUTES.COLLECTIONS}
+                              onClick={() => setActiveMegaMenu(null)}
+                              className="text-slate-600 hover:text-red-600 font-semibold transition-colors"
+                            >
+                              Explore Master Catalog →
+                            </Link>
+                          </div>
+                        </div>
+
+                        {/* Right Column: Featured Spotlight Card (4 cols) */}
+                        <div className="col-span-4 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 rounded-xl p-4 text-white flex flex-col justify-between relative overflow-hidden shadow-inner">
+                          {/* Radial Glow */}
+                          <div className="absolute top-0 right-0 w-36 h-36 bg-red-600/20 rounded-full blur-2xl pointer-events-none" />
+
+                          <div>
+                            {meta?.badge && (
+                              <span className="inline-block px-2.5 py-0.5 bg-red-600 text-white text-[10px] font-extrabold uppercase tracking-wider rounded-md mb-2.5 shadow-xs">
+                                {meta.badge}
+                              </span>
+                            )}
+                            <h4 className="text-sm font-bold text-white mb-1.5 leading-snug">{item.name}</h4>
+                            <p className="text-[11px] text-slate-300 leading-relaxed font-normal mb-3">
+                              {meta?.desc || "Certified commercial grade accessories with export quality finish."}
+                            </p>
+
+                            {/* Features list */}
+                            {meta?.features && (
+                              <div className="space-y-1.5 mb-2">
+                                {meta.features.map((feat, i) => (
+                                  <div key={i} className="flex items-center gap-1.5 text-[10px] text-slate-300">
+                                    <CheckCircle2 size={11} className="text-red-400 shrink-0" />
+                                    <span>{feat}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="pt-3 mt-3 border-t border-slate-800/80">
+                            <Link
+                              href={item.href}
+                              onClick={() => setActiveMegaMenu(null)}
+                              className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md shadow-red-950/40 hover:scale-[1.02]"
+                            >
+                              <span>Shop {item.name.split(" ")[0]}</span>
+                              <ArrowRight size={12} />
+                            </Link>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </nav>
+
+          {/* ── Right Action Controls ─────────────────────────────── */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+
+            {/* Quick Search Trigger Input */}
+            <div className="relative">
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-100/90 hover:bg-slate-200/80 text-slate-600 hover:text-slate-900 text-xs font-medium transition-all duration-200 border border-transparent hover:border-slate-200 group cursor-pointer"
+                aria-label="Search catalog"
+              >
+                <Search size={14} className="text-slate-500 group-hover:text-red-600 transition-colors" />
+                <span className="hidden md:inline text-slate-500 font-normal">Search products…</span>
+                <span className="hidden lg:inline-flex items-center gap-0.5 text-[10px] font-mono bg-white text-slate-400 px-1.5 py-0.5 rounded border border-slate-200/80 shadow-2xs">
+                  ⌘K
+                </span>
+              </button>
+
+              {/* Expandable Search Modal Popover */}
+              {searchOpen && (
+                <div
+                  className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-50 flex items-start justify-center pt-20 sm:pt-28 px-4 animate-in fade-in duration-150"
+                  onClick={() => setSearchOpen(false)}
+                >
+                  <div
+                    className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <form onSubmit={handleSearchSubmit} className="flex items-center gap-3 p-4 sm:p-5 border-b border-slate-100">
+                      <Search size={22} className="text-red-600 shrink-0" />
+                      <input
+                        ref={searchRef}
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search modular kitchen, wire baskets, bathroom racks, organizers…"
+                        className="w-full text-base font-medium outline-none text-slate-900 placeholder-slate-400"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setSearchOpen(false)}
+                        className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                      >
+                        <X size={18} />
+                      </button>
+                    </form>
+
+                    <div className="p-5 bg-slate-50/80">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
+                        <Flame size={13} className="text-red-500" />
+                        Popular Searches
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {POPULAR_SEARCH_TAGS.map((term) => (
+                          <button
+                            key={term}
+                            type="button"
+                            onClick={() => {
+                              router.push(`${ROUTES.SEARCH}?q=${encodeURIComponent(term)}`);
+                              setSearchOpen(false);
+                            }}
+                            className="px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:border-red-500 hover:text-red-600 hover:shadow-xs transition-all cursor-pointer"
+                          >
+                            {term}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Wishlist Button */}
             <Link
               href={ROUTES.WISHLIST}
-              className="hidden lg:flex p-2 text-gray-700 hover:text-rose-500 transition-colors relative"
-              aria-label="Wishlist"
+              className="p-2.5 rounded-full text-slate-700 hover:text-red-600 hover:bg-slate-100 transition-all relative group"
+              aria-label="Saved items"
             >
-              <Heart className="w-5 h-5" strokeWidth={1.5} />
+              <Heart size={19} className="group-hover:scale-110 transition-transform" />
               {wishlistTotal > 0 && (
-                <span
-                  key={wishlistTotal}
-                  className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full"
-                  style={{ animation: wishPop ? "badgePop 0.4s ease" : "none" }}
-                >
+                <span className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] font-extrabold rounded-full flex items-center justify-center shadow-xs">
                   {wishlistTotal}
                 </span>
               )}
             </Link>
 
-            {/* Profile - Desktop Only */}
-            <Link
-              href={user ? ROUTES.PROFILE : ROUTES.LOGIN}
-              className="hidden lg:flex p-2 text-gray-700 hover:text-amber-600 transition-colors"
-              aria-label={user ? "My profile" : "Sign in"}
-            >
-              <User className="w-5 h-5" strokeWidth={1.5} />
-            </Link>
-
-            {/* Cart */}
+            {/* Shopping Cart Button */}
             <Link
               href={ROUTES.CART}
-              className="relative p-2 rounded-md text-gray-600 transition-all focus-visible:outline-none focus-visible:ring-2"
+              className="p-2.5 rounded-full text-slate-700 hover:text-red-600 hover:bg-slate-100 transition-all relative group"
               aria-label="Cart"
-              onMouseEnter={(e) => { e.currentTarget.style.background = BRAND.greenSofter; e.currentTarget.style.color = BRAND.green; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = ""; }}
             >
-              <ShoppingCart className="w-5 h-5" />
+              <ShoppingCart size={19} className="group-hover:scale-110 transition-transform" />
               {cartCount > 0 && (
-                <span
-                  key={cartCount}
-                  className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-white text-[10px] font-bold rounded-full"
-                  style={{ background: BRAND.green, animation: cartPop ? "badgePop 0.4s ease" : "none" }}
-                >
+                <span className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] font-extrabold rounded-full flex items-center justify-center shadow-xs">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
             </Link>
 
-            {/* Mobile hamburger */}
-            <button
-              className="lg:hidden p-2 rounded-md text-gray-700 transition-all focus-visible:outline-none focus-visible:ring-2"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-              aria-expanded={mobileMenuOpen}
-              onMouseEnter={(e) => { e.currentTarget.style.background = BRAND.greenSofter; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-            >
-              <div className="relative w-5 h-5">
-                <Menu className={`w-5 h-5 absolute inset-0 transition-all duration-200 ${mobileMenuOpen ? "opacity-0 rotate-90" : "opacity-100 rotate-0"}`} />
-                <X className={`w-5 h-5 absolute inset-0 transition-all duration-200 ${mobileMenuOpen ? "opacity-100 rotate-0" : "opacity-0 -rotate-90"}`} />
-              </div>
-            </button>
-          </div>
-        </nav>
-
-        {/* ── Mobile Menu ─────────────────────────────────────── */}
-        <div
-          className={`
-            lg:hidden overflow-hidden transition-all duration-300 ease-in-out
-            border-t border-gray-100 bg-white
-            ${mobileMenuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}
-          `}
-        >
-          <div className="overflow-y-auto max-h-[80vh] px-4 py-2">
-            {/* Mobile Account Links */}
-            <div className="flex flex-col py-4 border-b border-gray-100">
-              <Link
-                href={ROUTES.WISHLIST}
-                className="flex items-center gap-3 px-2 py-3 text-gray-800 hover:text-rose-500 transition-colors rounded-lg"
-                onClick={() => setMobileMenuOpen(false)}
+            {/* User Account Dropdown */}
+            <div className="relative hidden md:block">
+              <button
+                id="user-dropdown-btn"
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="flex items-center gap-2 p-1.5 rounded-full text-slate-700 hover:text-red-600 hover:bg-slate-100 transition-all cursor-pointer"
+                aria-label="User Account"
               >
-                <Heart className="w-5 h-5 text-rose-500" strokeWidth={1.5} />
-                <span className="text-sm font-medium capitalize tracking-normal">My Wishlist</span>
-                {wishlistTotal > 0 && (
-                  <span className="bg-rose-500 text-white text-[10px] px-2 py-0.5 rounded-full ml-auto">
-                    {wishlistTotal}
-                  </span>
+                {user ? (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-red-600 to-rose-500 text-white font-bold text-xs flex items-center justify-center shadow-sm">
+                    {user.name?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center hover:bg-slate-200 transition-colors">
+                    <User size={18} />
+                  </div>
                 )}
-              </Link>
-              <Link
-                href={user ? ROUTES.PROFILE : ROUTES.LOGIN}
-                className="flex items-center gap-3 px-2 py-3 text-gray-800 hover:text-amber-600 transition-colors rounded-lg"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <User className="w-5 h-5 text-amber-600" strokeWidth={1.5} />
-                <span className="text-sm font-medium capitalize tracking-normal">
-                  {user ? "My Profile" : "Login / Register"}
-                </span>
-              </Link>
-            </div>
+              </button>
 
-            {/* Mobile currency */}
-            <div className="flex flex-col gap-2 py-3 border-b border-gray-100 mb-1">
-              <span className="text-xs text-gray-400 capitalize tracking-normal flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5" /> Select Region
-              </span>
-              <div className="flex flex-col gap-2">
-                {REGIONS.map((r) => (
-                  <button
-                    key={r.code}
-                    onClick={() => { changeCurrency(r.code); setMobileMenuOpen(false); }}
-                    className="text-sm px-4 py-2.5 rounded-lg border text-left flex justify-between items-center transition-all"
-                    style={currency === r.code
-                      ? { background: BRAND.green, borderColor: BRAND.green, color: "#fff", fontWeight: 700 }
-                      : { borderColor: "#E5E7EB", color: "#374151" }}
-                  >
-                    <span>{r.name}</span>
-                    <span className={currency === r.code ? "text-white/80" : "text-gray-400"}>{r.symbol}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile nav links */}
-            <ul className="flex flex-col">
-              {NAV_LINKS.map((item) => {
-                const active = isActive(item.href);
-                return (
-                  <li key={item.name} className="border-b border-gray-50 last:border-0">
-                    <div className="flex items-center justify-between">
-                      <Link
-                        href={item.href}
-                        aria-current={active ? "page" : undefined}
-                        className="flex-1 py-3 text-base font-medium transition-colors"
-                        style={{ color: active ? BRAND.green : "#1F2937" }}
-                        onClick={() => { if (!item.children) setMobileMenuOpen(false); }}
-                      >
-                        {titleCase(item.name)}
-                      </Link>
-                      {item.children && (
-                        <button
-                          onClick={() => setMobileDropdown(mobileDropdown === item.name ? null : item.name)}
-                          aria-expanded={mobileDropdown === item.name}
-                          className="p-2 text-gray-400 transition-colors"
-                          style={{ color: mobileDropdown === item.name ? BRAND.green : undefined }}
-                        >
-                          <ChevronDown
-                            className={`w-4 h-4 transition-transform ${mobileDropdown === item.name ? "rotate-180" : ""}`}
-                          />
-                        </button>
-                      )}
-                    </div>
-
-                    {item.children && mobileDropdown === item.name && (
-                      <ul className="pl-4 pb-3 space-y-2" style={{ animation: "fadeSlideDown 0.15s ease both" }}>
-                        {item.children.map((child) => (
-                          <li key={child.name}>
-                            <Link
-                              href={child.href}
-                              className="flex items-center gap-2 py-1.5 text-sm text-gray-500 transition-colors"
-                              onClick={() => setMobileMenuOpen(false)}
-                            >
-                              <span className="w-1 h-1 rounded-full bg-gray-300 shrink-0" />
-                              {titleCase(child.name)}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-
-            {/* Mobile user actions */}
-            <div className="flex items-center gap-3 py-4 mt-1 border-t border-gray-100">
-              {user ? (
-                <>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ background: BRAND.green }}>
-                    {user.name?.[0]?.toUpperCase() ?? "U"}
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-gray-800">{user.name}</p>
-                    <p className="text-xs text-gray-400">{user.email}</p>
-                  </div>
-                  <button
-                    onClick={() => { logout(); setMobileMenuOpen(false); }}
-                    className="flex items-center gap-1 text-xs text-red-500 hover:text-red-600 transition-colors"
-                  >
-                    <LogOut size={14} /> Logout
-                  </button>
-                </>
-              ) : (
-                <Link
-                  href={ROUTES.LOGIN}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-2 text-sm font-medium"
-                  style={{ color: BRAND.green }}
+              {userDropdownOpen && (
+                <div
+                  id="user-dropdown-menu"
+                  className="absolute right-0 top-full mt-2 w-60 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150 ring-1 ring-slate-900/5"
                 >
-                  <User className="w-4 h-4" /> Sign In / Register
-                </Link>
+                  {user ? (
+                    <>
+                      <div className="px-3 py-2.5 bg-slate-50 rounded-xl mb-2">
+                        <p className="text-xs font-bold text-slate-900 truncate">{user.name}</p>
+                        <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+                      </div>
+                      <Link
+                        href={ROUTES.PROFILE}
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="block px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+                      >
+                        Account Dashboard
+                      </Link>
+                      <Link
+                        href={ROUTES.WISHLIST}
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="block px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+                      >
+                        Saved Wishlist
+                      </Link>
+                      <div className="my-1 border-t border-slate-100" />
+                      <button
+                        onClick={() => { logout(); setUserDropdownOpen(false); }}
+                        className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
+                      >
+                        <LogOut size={14} /> Sign Out
+                      </button>
+                    </>
+                  ) : (
+                    <div className="p-2 space-y-3">
+                      <div>
+                        <p className="text-xs font-bold text-slate-900">Welcome to ALIGHT™</p>
+                        <p className="text-[11px] text-slate-500">Access exclusive trade discounts & orders</p>
+                      </div>
+                      <Link
+                        href={ROUTES.LOGIN}
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="block w-full text-center py-2.5 bg-slate-900 hover:bg-red-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+                      >
+                        Sign In / Register
+                      </Link>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
+
+            {/* Mobile Hamburger Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="xl:hidden p-2 rounded-xl text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+          </div>
+
+        </div>
+      </header>
+
+      {/* ── 3. Mobile Navigation Drawer ──────────────────────────────── */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs xl:hidden animate-in fade-in duration-200">
+          <div className="fixed top-0 right-0 bottom-0 w-full max-w-sm bg-white shadow-2xl flex flex-col z-50 animate-in slide-in-from-right duration-300">
+            
+            {/* Mobile Header */}
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+              <BrandLogo variant="light" size="sm" />
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-xl hover:bg-slate-100 text-slate-500 transition-colors cursor-pointer"
+                aria-label="Close menu"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Mobile Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-5">
+              
+              {/* Account Quick Card */}
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex items-center justify-between">
+                {user ? (
+                  <div>
+                    <p className="text-xs font-bold text-slate-900">{user.name}</p>
+                    <p className="text-[10px] text-slate-400">{user.email}</p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-xs font-bold text-slate-900">Welcome Guest</p>
+                    <p className="text-[10px] text-slate-400">Sign in for saved items & orders</p>
+                  </div>
+                )}
+                <Link
+                  href={user ? ROUTES.PROFILE : ROUTES.LOGIN}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-3.5 py-1.5 bg-slate-900 text-white text-[11px] font-bold rounded-xl hover:bg-red-600 transition-colors"
+                >
+                  {user ? "Profile" : "Sign In"}
+                </Link>
+              </div>
+
+              {/* Categories Accordion */}
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2.5 px-1">
+                  Product Categories
+                </p>
+                <div className="space-y-1">
+                  {NAV_LINKS.map((item) => {
+                    const isExpanded = mobileExpandedCat === item.name;
+                    const hasChildren = item.children && item.children.length > 0;
+                    const meta = CATEGORY_META[item.name];
+
+                    return (
+                      <div key={item.name} className="border-b border-slate-100 last:border-none">
+                        <div className="flex items-center justify-between py-2.5">
+                          <Link
+                            href={item.href}
+                            onClick={() => !hasChildren && setMobileMenuOpen(false)}
+                            className="text-sm font-bold text-slate-800 hover:text-red-600 flex items-center gap-2"
+                          >
+                            {meta?.icon && <meta.icon size={15} className="text-red-600" />}
+                            <span>{item.name}</span>
+                          </Link>
+                          {hasChildren && (
+                            <button
+                              onClick={() => setMobileExpandedCat(isExpanded ? null : item.name)}
+                              className="p-2 text-slate-400 hover:text-slate-700 cursor-pointer"
+                              aria-label="Expand category"
+                            >
+                              <ChevronDown
+                                size={16}
+                                className={`transition-transform duration-200 ${isExpanded ? "rotate-180 text-red-600" : ""}`}
+                              />
+                            </button>
+                          )}
+                        </div>
+
+                        {hasChildren && isExpanded && (
+                          <div className="pl-4 pb-3 space-y-2 bg-slate-50/60 rounded-xl p-2.5 mb-2">
+                            {item.children.map((sub) => (
+                              <Link
+                                key={sub.name}
+                                href={sub.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-red-600 py-1 transition-colors"
+                              >
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                                <span>{sub.name}</span>
+                              </Link>
+                            ))}
+                            <div className="pt-2 border-t border-slate-200/60">
+                              <Link
+                                href={item.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="text-[11px] font-bold text-red-600 hover:underline flex items-center gap-1"
+                              >
+                                <span>Browse full {item.name} series</span>
+                                <ArrowRight size={11} />
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Company & Support Links */}
+              <div className="pt-3 border-t border-slate-100 space-y-1 text-xs font-semibold text-slate-700">
+                <Link
+                  href={ROUTES.COLLECTIONS}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 hover:text-red-600 transition-colors"
+                >
+                  All Collections
+                </Link>
+                <Link
+                  href={ROUTES.ABOUT}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 hover:text-red-600 transition-colors"
+                >
+                  About ALIGHT™ Direct
+                </Link>
+                <Link
+                  href={ROUTES.CONTACT}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 hover:text-red-600 transition-colors"
+                >
+                  Contact & Factory Support
+                </Link>
+                <Link
+                  href={ROUTES.SHIPPING}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 hover:text-red-600 transition-colors"
+                >
+                  Shipping & Logistics
+                </Link>
+              </div>
+
+            </div>
+
+            {/* Mobile Footer with Helpline */}
+            <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-600">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-emerald-500" />
+                <span className="font-semibold">ISO 9001 Certified</span>
+              </div>
+              <a
+                href="tel:+919876543210"
+                className="font-bold text-red-600 hover:underline flex items-center gap-1"
+              >
+                <Phone size={12} />
+                <span>Call Support</span>
+              </a>
+            </div>
+
           </div>
         </div>
-      </div>
-
-      {/* ── Animation keyframes live in globals.css ─────────── */}
+      )}
     </>
   );
 }

@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
-  Facebook, Instagram, Twitter, Youtube,
+  Facebook, Instagram, Twitter, Linkedin,
   Mail, ArrowUpRight, ChevronUp, CheckCircle2,
-  MapPin, Phone, Globe
+  MapPin, Phone, Globe, ShieldCheck, Award
 } from "lucide-react";
 import { ROUTES } from "@/lib/routes";
+import BrandLogo from "@/components/ui/BrandLogo";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -27,62 +27,33 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative bg-gradient-to-b from-[#0f172a] to-[#020617] text-white overflow-hidden pt-16 pb-8">
-      {/* Decorative Lotus Watermark (Bottom Right) */}
-      <div className="absolute bottom-[-40px] right-[-40px] w-64 h-64 pointer-events-none opacity-[0.03] rotate-12">
-        <Image src="/images/lotus_icon.png" alt="" fill className="object-contain" />
-      </div>
-
+    <footer className="relative bg-gradient-to-b from-slate-900 via-slate-950 to-black text-white overflow-hidden pt-16 pb-8 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-8 md:gap-12 mb-10 md:mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-8 md:gap-12 mb-12 md:mb-16">
 
           {/* Brand & Mission (4 columns) */}
           <div className="md:col-span-4 space-y-6">
-            <Link
-              href="/"
-              className="flex items-center gap-3 shrink-0 group transition-all duration-500 ease-out logo-entrance"
-            >
-              <div className="relative transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-green-900/10 group-hover:drop-shadow-xl p-1 bg-white/90 rounded-xl">
-                <Image
-                  src="/images/logo.png"
-                  alt="Bal Jyoti Design"
-                  width={100}
-                  height={40}
-                  className="h-10 w-auto mix-blend-multiply"
-                  priority
-                />
-              </div>
-              <div className="flex flex-col leading-none transition-all duration-500 group-hover:translate-x-1">
-                <span className="text-xl md:text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#2d6a2d] via-[#4a8a4a] to-[#2d6a2d] drop-shadow-sm animate-gradient-x">
-                  Bal Jyoti
-                </span>
-                <span className="text-[10px] md:text-xs font-bold tracking-[0.3em] uppercase text-[#7c5a2a] opacity-80 group-hover:opacity-100 group-hover:tracking-[0.4em] transition-all duration-500">
-                  Design
-                </span>
-              </div>
-            </Link>
+            <BrandLogo variant="dark" />
 
-            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-              The premier destination for handcrafted Indian heritage collections.
-              We bridge rural craftsmanship with modern sustainable designs,
-              bringing a piece of India's soul to your home.
+            <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
+              ALIGHT™ is a premier manufacturer and global supplier of high-precision stainless steel modular kitchen accessories, bathroom fixtures, wardrobe storage systems, and heavy-duty wire home furnishings.
             </p>
 
-            <div className="flex items-center gap-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-amber-500/60">Follow Us</span>
-              <div className="h-px flex-1 bg-white/10 max-w-[40px]" />
+            <div className="flex items-center gap-4 pt-2">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-sky-400">Connect</span>
+              <div className="h-px flex-1 bg-slate-800 max-w-[40px]" />
               <div className="flex gap-4">
                 {[
-                  { Icon: Facebook, color: "hover:text-[#1877F2]", href: "#", label: "Facebook" },
-                  { Icon: Instagram, color: "hover:text-[#E4405F]", href: "#", label: "Instagram" },
-                  { Icon: Twitter, color: "hover:text-[#1DA1F2]", href: "#", label: "Twitter" },
-                  { Icon: Youtube, color: "hover:text-[#FF0000]", href: "#", label: "YouTube" }
+                  { Icon: Linkedin, color: "hover:text-sky-400", href: "#", label: "LinkedIn" },
+                  { Icon: Twitter, color: "hover:text-sky-400", href: "#", label: "Twitter" },
+                  { Icon: Facebook, color: "hover:text-blue-500", href: "#", label: "Facebook" },
+                  { Icon: Instagram, color: "hover:text-pink-400", href: "#", label: "Instagram" },
                 ].map((social, i) => (
                   <a
                     key={i}
                     href={social.href}
                     aria-label={`Follow us on ${social.label}`}
-                    className={`text-gray-500 transition-all duration-300 transform hover:scale-125 ${social.color}`}
+                    className={`text-slate-500 transition-all duration-300 transform hover:scale-110 ${social.color}`}
                   >
                     <social.Icon size={18} />
                   </a>
@@ -91,39 +62,40 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links (sm:col-span-1 / md:col-span-2) */}
-          <div className="md:col-span-2 space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-white/90">Experience</h4>
-            <ul className="space-y-4">
+          {/* Enterprise Solutions (2 columns) */}
+          <div className="md:col-span-2 space-y-5">
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Solutions</h4>
+            <ul className="space-y-3.5">
+              {[
+                { name: "All Solutions", href: ROUTES.COLLECTIONS },
+                { name: "Custom Sourcing", href: ROUTES.BULK_ORDERS },
+                { name: "Global Operations", href: ROUTES.ABOUT },
+                { name: "Catalog Search", href: ROUTES.SEARCH },
+              ].map((link) => (
+                <li key={link.name}>
+                  <Link href={link.href} className="text-slate-400 text-xs tracking-wide hover:text-sky-400 hover:translate-x-1 transition-all flex items-center gap-2 group">
+                    <span className="w-1 h-px bg-slate-700 group-hover:w-2 group-hover:bg-sky-400 transition-all" />
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Corporate Support (2 columns) */}
+          <div className="md:col-span-2 space-y-5">
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Company & Legal</h4>
+            <ul className="space-y-3.5">
               {[
                 { name: "About Us", href: ROUTES.ABOUT },
-                { name: "Our Artisans", href: ROUTES.ARTISANS },
-                { name: "Collections", href: ROUTES.COLLECTIONS },
-                { name: "Our Impact", href: ROUTES.IMPACT },
-              ].map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-gray-400 text-[11px] uppercase tracking-widest hover:text-amber-500 hover:translate-x-1 transition-all flex items-center gap-2 group">
-                    <span className="w-1 h-px bg-white/20 group-hover:w-2 group-hover:bg-amber-500 transition-all" />
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support (2 columns) */}
-          <div className="md:col-span-2 space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-white/90">Support</h4>
-            <ul className="space-y-4">
-              {[
-                { name: "Shipping & Returns", href: ROUTES.SHIPPING },
+                { name: "Contact & RFQ", href: ROUTES.CONTACT },
+                { name: "Shipping Policy", href: ROUTES.SHIPPING },
                 { name: "Privacy Policy", href: ROUTES.PRIVACY },
                 { name: "Terms of Service", href: ROUTES.TERMS },
-                { name: "Contact Us", href: ROUTES.CONTACT },
               ].map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-gray-400 text-[11px] uppercase tracking-widest hover:text-amber-500 hover:translate-x-1 transition-all flex items-center gap-2 group">
-                    <span className="w-1 h-px bg-white/20 group-hover:w-2 group-hover:bg-amber-500 transition-all" />
+                  <Link href={link.href} className="text-slate-400 text-xs tracking-wide hover:text-sky-400 hover:translate-x-1 transition-all flex items-center gap-2 group">
+                    <span className="w-1 h-px bg-slate-700 group-hover:w-2 group-hover:bg-sky-400 transition-all" />
                     {link.name}
                   </Link>
                 </li>
@@ -131,50 +103,49 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter (4 columns) */}
-          <div className="md:col-span-4 space-y-6">
-            <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-white/90">Join Our Circle</h4>
-            <p className="text-gray-400 text-xs leading-relaxed">
-              Subscribe to get early access to new collections,
-              artisan stories, and exclusive festive offers.
+          {/* Trade Briefing (4 columns) */}
+          <div className="md:col-span-4 space-y-5">
+            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-200">Trade Intelligence</h4>
+            <p className="text-slate-400 text-xs leading-relaxed">
+              Subscribe to receive updates on international product availability, trade logistics, and bespoke supply capabilities.
             </p>
 
             <form onSubmit={handleSubscribe} className="relative group">
-              <div className="flex items-center border-b border-white/20 focus-within:border-amber-500 transition-all py-2">
-                <Mail size={16} className="text-gray-500 mr-3" />
+              <div className="flex items-center border-b border-slate-700 focus-within:border-sky-400 transition-all py-2">
+                <Mail size={16} className="text-slate-500 mr-3" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your Email Address"
-                  className="bg-transparent border-none focus:outline-none text-sm flex-1 placeholder:text-gray-600"
+                  placeholder="Enter corporate email"
+                  className="bg-transparent border-none focus:outline-none text-xs flex-1 placeholder:text-slate-600 text-white"
                   required
                 />
                 <button
                   type="submit"
-                  className="text-amber-500 hover:text-amber-400 transform transition-transform group-hover:translate-x-1"
+                  className="text-sky-400 hover:text-sky-300 transform transition-transform group-hover:translate-x-1"
+                  aria-label="Submit newsletter subscription"
                 >
-                  <ArrowUpRight size={20} />
+                  <ArrowUpRight size={18} />
                 </button>
               </div>
 
-              {/* Newsletter Message Overlay */}
               {subscribed && (
-                <div className="absolute top-full left-0 mt-3 flex items-center gap-2 text-emerald-400 text-xs animate-in fade-in slide-in-from-top-1 duration-300">
+                <div className="absolute top-full left-0 mt-2 flex items-center gap-2 text-sky-400 text-xs animate-in fade-in duration-300">
                   <CheckCircle2 size={14} />
-                  <span>Welcome to the circle! Check your inbox.</span>
+                  <span>Thank you for subscribing to Alight International updates.</span>
                 </div>
               )}
             </form>
 
-            <div className="pt-4 space-y-3">
-              <div className="flex items-center gap-3 text-gray-400 text-xs">
-                <MapPin size={14} className="text-amber-500/60" />
-                <span>Bihar, India — Heritage Craft Center</span>
+            <div className="pt-3 space-y-2.5">
+              <div className="flex items-center gap-2.5 text-slate-400 text-xs">
+                <Globe size={14} className="text-sky-400 shrink-0" />
+                <span>Worldwide Fulfillment & Distribution Network</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-400 text-xs">
-                <Globe size={14} className="text-amber-500/60" />
-                <span>Shipping Worldwide</span>
+              <div className="flex items-center gap-2.5 text-slate-400 text-xs">
+                <ShieldCheck size={14} className="text-sky-400 shrink-0" />
+                <span>Certified Enterprise Quality Assurance</span>
               </div>
             </div>
           </div>
@@ -182,25 +153,26 @@ export default function Footer() {
         </div>
 
         {/* Divider & Social Bottom */}
-        <div className="border-t border-white/5 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500">
-            <span>Handcrafted in India</span>
-            <span className="w-1 h-1 rounded-full bg-amber-500/50" />
-            <span>Sustainable Heritage</span>
-            <span className="w-1 h-1 rounded-full bg-amber-500/50" />
-            <span>Empowering Rural Artisans</span>
+        <div className="border-t border-slate-800/80 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.15em] text-slate-400">
+            <span>Global Trade</span>
+            <span className="w-1 h-1 rounded-full bg-sky-500" />
+            <span>Reliable Logistics</span>
+            <span className="w-1 h-1 rounded-full bg-sky-500" />
+            <span>Enterprise Quality</span>
           </div>
 
-          <p className="text-gray-600 text-[10px] uppercase tracking-widest">
-            © {new Date().getFullYear()} Bal Jyoti Design. All rights reserved.
+          <p className="text-slate-400 text-xs">
+            © {new Date().getFullYear()} Alight International. All rights reserved.
           </p>
 
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-white/50 hover:text-amber-500 transition-colors group"
+            className="flex items-center gap-2 text-xs uppercase tracking-widest text-slate-400 hover:text-sky-400 transition-colors group"
+            aria-label="Scroll back to top"
           >
             Back to Top
-            <div className="p-2 rounded-full border border-white/10 group-hover:border-amber-500 transition-all">
+            <div className="p-1.5 rounded-lg border border-slate-800 group-hover:border-sky-500 transition-all">
               <ChevronUp size={12} />
             </div>
           </button>

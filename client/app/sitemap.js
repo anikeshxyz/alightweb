@@ -1,4 +1,4 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://baljyotidesign.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://alightintl.com";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
 
 /** Static pages with their SEO priority and change frequency */
@@ -20,7 +20,7 @@ const STATIC_ROUTES = [
 ];
 
 const CATEGORY_SLUGS = [
-  "bamboo", "rugs", "moonj-sikki", "wood", "apparel", "painting",
+  "modular-kitchen", "kitchen-storage", "tabletop-cutlery", "bathroom-fixtures", "wardrobe-accessories", "wire-products",
 ];
 
 export default async function sitemap() {

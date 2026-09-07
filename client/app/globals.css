@@ -17,35 +17,26 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-heading: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Brand Colors */
-  --color-primary: #1a5d1a;
-  /* Forest Green from logo */
-  --color-secondary: #5d4037;
-  /* Earthy Brown from logo */
-  --color-accent: #d97706;
-  /* Golden Orange */
+  /* Alight International Brand Colors */
+  --color-primary: #0f172a;
+  /* Deep Obsidian / Slate 900 */
+  --color-secondary: #334155;
+  /* Slate 700 */
+  --color-accent: #0284c7;
+  /* Electric Cobalt / Sky Blue */
+  --color-accent-hover: #0369a1;
 
-  --color-primary-light: #4ade80;
-  --color-primary-dark: #14532d;
-
-  /* Sharp Edges Override */
-  --radius-xs: 0px;
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
-  --radius-2xl: 0px;
-  --radius-3xl: 0px;
-  --radius-4xl: 0px;
-  --radius-full: 0px;
+  --color-primary-light: #38bdf8;
+  --color-primary-dark: #020617;
 }
 
 /* Typography Base */
-h1, h2, h3, h4, h5, h6, .font-serif {
-  font-family: var(--font-playfair), ui-serif, Georgia, serif;
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-heading), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
 }
 
 /* Ensure circular elements that MUST be circular stay so */
@@ -113,13 +104,13 @@ body {
   100% { transform: scale(1); }
 }
 
-/* ─── Focus Ring (brand green) ─────────────────────────── */
+/* ─── Focus Ring (brand blue) ─────────────────────────── */
 :focus-visible {
   outline: none;
 }
 
 .focus-visible\:ring-2:focus-visible {
-  box-shadow: 0 0 0 2px rgba(45,106,45,0.35);
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.4);
 }
 
 /* ─── Reduced Motion ───────────────────────────────────── */

@@ -1,6 +1,3 @@
-
-
-
 export const ROUTES = {
     HOME: "/",
     LOGIN: "/login",
@@ -27,48 +24,71 @@ export const ROUTES = {
 
 export const NAV_LINKS = [
     {
-        name: "Rugs",
-        href: `${ROUTES.PRODUCT_CATEGORIES}/rugs`,
+        name: "Modular Kitchen",
+        href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen`,
         children: [
-            { name: "Doormat", href: `${ROUTES.PRODUCT_CATEGORIES}/rugs/doormat` },
-            { name: "Aasan", href: `${ROUTES.PRODUCT_CATEGORIES}/rugs/aasan` },
-            { name: "Yoga Mat", href: `${ROUTES.PRODUCT_CATEGORIES}/rugs/yoga-mat` },
-            { name: "Runner", href: `${ROUTES.PRODUCT_CATEGORIES}/rugs/runner` },
-            { name: "Floor Rugs", href: `${ROUTES.PRODUCT_CATEGORIES}/rugs/floor-rugs` }
+            { name: "Pantry Pull-Outs", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/pantry-pull-outs` },
+            { name: "Kitchen Baskets", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/kitchen-baskets` },
+            { name: "Cutlery Holders / Stands", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/cutlery-holders-stands` },
+            { name: "Plate Stands", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/plate-stands` },
+            { name: "Bottle Racks", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/bottle-racks` },
+            { name: "Spice Racks", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/spice-racks` },
+            { name: "Cylinder Trolleys", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/cylinder-trolleys` },
+            { name: "Rolling-Pin Holders", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/rolling-pin-holders` },
+            { name: "Corner Units & Magic Corners", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/corner-units` },
+            { name: "Waste Bins", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/waste-bins` },
+            { name: "Multipurpose Baskets", href: `${ROUTES.PRODUCT_CATEGORIES}/modular-kitchen/multipurpose-baskets` }
         ]
     },
     {
-        name: "Bamboo Crafts",
-        href: `${ROUTES.PRODUCT_CATEGORIES}/bamboo`,
+        name: "Kitchen Storage",
+        href: `${ROUTES.PRODUCT_CATEGORIES}/kitchen-storage`,
         children: [
-            { name: "Lantern (Cylindrical, Globe, Petromax)", href: `${ROUTES.PRODUCT_CATEGORIES}/bamboo/lantern` },
-            { name: "Jewellery & Cosmetic Box", href: `${ROUTES.PRODUCT_CATEGORIES}/bamboo/jewellery-cosmetic-box` },
-            { name: "Laundry / Dustbin Bag", href: `${ROUTES.PRODUCT_CATEGORIES}/bamboo/laundry-bag` },
-            { name: "Pen Stand", href: `${ROUTES.PRODUCT_CATEGORIES}/bamboo/pen-stand` },
-            { name: "Utility Box", href: `${ROUTES.PRODUCT_CATEGORIES}/bamboo/utility-box` }
+            { name: "Modular Shelves", href: `${ROUTES.PRODUCT_CATEGORIES}/kitchen-storage/shelves` },
+            { name: "Kitchen Organizers", href: `${ROUTES.PRODUCT_CATEGORIES}/kitchen-storage/organizers` },
+            { name: "Serving & Utility Trays", href: `${ROUTES.PRODUCT_CATEGORIES}/kitchen-storage/trays` },
+            { name: "Pull-Out Systems", href: `${ROUTES.PRODUCT_CATEGORIES}/kitchen-storage/pull-out-systems` },
+            { name: "Magic Corners", href: `${ROUTES.PRODUCT_CATEGORIES}/kitchen-storage/magic-corners` }
         ]
     },
     {
-        name: "Sikki & Moonj",
-        href: `${ROUTES.PRODUCT_CATEGORIES}/sikki-moonj`,
+        name: "Tabletop & Cutlery",
+        href: `${ROUTES.PRODUCT_CATEGORIES}/tabletop-cutlery`,
         children: [
-            { name: "Tokri", href: `${ROUTES.PRODUCT_CATEGORIES}/sikki-moonj/tokri` },
-            { name: "Laundry Bag", href: `${ROUTES.PRODUCT_CATEGORIES}/sikki-moonj/laundry-bag` },
-            { name: "Wall Hanging", href: `${ROUTES.PRODUCT_CATEGORIES}/sikki-moonj/wall-hanging` },
-            { name: "Utility Box", href: `${ROUTES.PRODUCT_CATEGORIES}/sikki-moonj/utility-box` }
+            { name: "Spoon Stands", href: `${ROUTES.PRODUCT_CATEGORIES}/tabletop-cutlery/spoon-stands` },
+            { name: "Cup Holders", href: `${ROUTES.PRODUCT_CATEGORIES}/tabletop-cutlery/cup-holders` },
+            { name: "Cup Stands", href: `${ROUTES.PRODUCT_CATEGORIES}/tabletop-cutlery/cup-stands` },
+            { name: "Napkin Holders", href: `${ROUTES.PRODUCT_CATEGORIES}/tabletop-cutlery/napkin-holders` },
+            { name: "Cutlery Stands", href: `${ROUTES.PRODUCT_CATEGORIES}/tabletop-cutlery/cutlery-stands` },
+            { name: "Bowls and Stands", href: `${ROUTES.PRODUCT_CATEGORIES}/tabletop-cutlery/bowls-and-stands` }
         ]
     },
     {
-        name: "Apparels",
-        href: `${ROUTES.PRODUCT_CATEGORIES}/apparel`,
+        name: "Bathroom Fixtures",
+        href: `${ROUTES.PRODUCT_CATEGORIES}/bathroom-fixtures`,
         children: [
-            { name: "Silk Fabric", href: `${ROUTES.PRODUCT_CATEGORIES}/apparel/silk-fabric` },
-            { name: "Cotton Fabric", href: `${ROUTES.PRODUCT_CATEGORIES}/apparel/cotton-fabric` },
-            { name: "Shirts", href: `${ROUTES.PRODUCT_CATEGORIES}/apparel/shirts` },
-            { name: "Pants", href: `${ROUTES.PRODUCT_CATEGORIES}/apparel/pants` }
+            { name: "Towel Racks & Bars", href: `${ROUTES.PRODUCT_CATEGORIES}/bathroom-fixtures/towel-racks` },
+            { name: "Shower Corner Caddies", href: `${ROUTES.PRODUCT_CATEGORIES}/bathroom-fixtures/corner-caddies` },
+            { name: "Soap & Tumbler Holders", href: `${ROUTES.PRODUCT_CATEGORIES}/bathroom-fixtures/soap-holders` },
+            { name: "Robe & Towel Hooks", href: `${ROUTES.PRODUCT_CATEGORIES}/bathroom-fixtures/robe-hooks` }
         ]
     },
-    { name: "Painting", href: `${ROUTES.PRODUCT_CATEGORIES}/painting` },
-    { name: "Archive", href: ROUTES.ARCHIVE },
-    { name: "Customize", href: ROUTES.BULK_ORDERS },
+    {
+        name: "Wardrobe Accessories",
+        href: `${ROUTES.PRODUCT_CATEGORIES}/wardrobe-accessories`,
+        children: [
+            { name: "Stainless-Steel Wardrobe Racks", href: `${ROUTES.PRODUCT_CATEGORIES}/wardrobe-accessories/wardrobe-racks` },
+            { name: "Trouser & Tie Organizers", href: `${ROUTES.PRODUCT_CATEGORIES}/wardrobe-accessories/trouser-organizers` },
+            { name: "Storage / Organizing Accessories", href: `${ROUTES.PRODUCT_CATEGORIES}/wardrobe-accessories/storage-accessories` }
+        ]
+    },
+    {
+        name: "Wire Products",
+        href: `${ROUTES.PRODUCT_CATEGORIES}/wire-products`,
+        children: [
+            { name: "Heavy-Duty Wire Racks", href: `${ROUTES.PRODUCT_CATEGORIES}/wire-products/wire-racks` },
+            { name: "Wire Organizers", href: `${ROUTES.PRODUCT_CATEGORIES}/wire-products/wire-organizers` },
+            { name: "Utility Wire Baskets", href: `${ROUTES.PRODUCT_CATEGORIES}/wire-products/utility-wire-baskets` }
+        ]
+    }
 ];

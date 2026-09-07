@@ -1,181 +1,218 @@
-<%- include('header', { path: '/orders' , admin: admin }) %>
+<%- include('header', { path: '/orders', admin: admin, title: 'Order Fulfillment & Management' }) %>
 
-    <style>
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 999px;
-            font-size: 0.85em;
-            font-weight: 500;
-            display: inline-block;
-        }
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success">
+            <i class="fas fa-circle-check"></i>
+            <span><%= success %></span>
+        </div>
+    <% } %>
 
-        .status-processing {
-            background: #fef3c7;
-            color: #92400e;
-        }
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger">
+            <i class="fas fa-circle-exclamation"></i>
+            <span><%= error %></span>
+        </div>
+    <% } %>
 
-        .status-shipped {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .status-delivered {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .status-cancelled {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .status-select {
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid var(--border-color);
-            font-size: 0.9em;
-            font-family: inherit;
-            background-color: #f8fafc;
-        }
-
-        .update-btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: var(--primary-color);
-            color: white;
-            cursor: pointer;
-            font-size: 0.85em;
-            margin-left: 5px;
-            transition: background-color 0.2s;
-        }
-
-        .update-btn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .order-date {
-            color: var(--text-muted);
-            font-size: 0.9em;
-        }
-    </style>
-
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0;">Order Management</h2>
-        <div class="stat-card"
-            style="padding: 10px 20px; border-radius: 8px; box-shadow: none; border: 1px solid var(--border-color); width: auto; margin: 0;">
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <i class="fas fa-shopping-bag" style="color: var(--primary-color); font-size: 1.2rem;"></i>
-                <div style="display: flex; flex-direction: column;">
-                    <span
-                        style="font-size: 0.8em; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Total
-                        Orders</span>
-                    <span style="font-weight: 700; font-size: 1.2em;">
-                        <%= typeof orders !=='undefined' ? orders.length : 0 %>
-                    </span>
-                </div>
-            </div>
+    <!-- Header Section -->
+    <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2 style="font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; color: var(--secondary-color); margin-bottom: 0.35rem;">
+                Order Fulfillment
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                Track orders, update delivery status, and review customer shipping manifests.
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="/admin/orders/export" class="btn btn-secondary">
+                <i class="fas fa-file-arrow-down"></i> Export Orders CSV
+            </a>
         </div>
     </div>
 
+    <!-- Status Filter Tabs -->
+    <div class="filter-tabs">
+        <a href="/admin/orders" class="filter-chip <%= currentStatus === 'all' ? 'active' : '' %>">
+            <span>All Orders</span>
+            <span class="chip-count"><%= counts ? counts.all : 0 %></span>
+        </a>
+        <a href="/admin/orders?status=Processing" class="filter-chip <%= currentStatus === 'Processing' ? 'active' : '' %>">
+            <span>Processing</span>
+            <span class="chip-count"><%= counts ? counts.Processing : 0 %></span>
+        </a>
+        <a href="/admin/orders?status=Shipped" class="filter-chip <%= currentStatus === 'Shipped' ? 'active' : '' %>">
+            <span>Shipped</span>
+            <span class="chip-count"><%= counts ? counts.Shipped : 0 %></span>
+        </a>
+        <a href="/admin/orders?status=Delivered" class="filter-chip <%= currentStatus === 'Delivered' ? 'active' : '' %>">
+            <span>Delivered</span>
+            <span class="chip-count"><%= counts ? counts.Delivered : 0 %></span>
+        </a>
+        <a href="/admin/orders?status=Cancelled" class="filter-chip <%= currentStatus === 'Cancelled' ? 'active' : '' %>">
+            <span>Cancelled</span>
+            <span class="chip-count"><%= counts ? counts.Cancelled : 0 %></span>
+        </a>
+    </div>
+
+    <!-- Search Toolbar -->
+    <div class="card" style="padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+        <form action="/admin/orders" method="GET" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <input type="hidden" name="status" value="<%= currentStatus %>">
+            
+            <div class="search-input-group" style="flex: 1; min-width: 280px;">
+                <i class="fas fa-magnifying-glass"></i>
+                <input type="text" name="q" class="form-control" placeholder="Search by Order ID, customer name, email, or city..." value="<%= typeof currentQuery !== 'undefined' ? currentQuery : '' %>">
+            </div>
+
+            <button type="submit" class="btn btn-secondary">
+                <i class="fas fa-search"></i> Search
+            </button>
+
+            <% if (currentQuery && currentQuery.trim()) { %>
+                <a href="/admin/orders?status=<%= currentStatus %>" class="btn btn-sm" style="color: var(--text-muted); background: #f1f5f9;">
+                    <i class="fas fa-xmark"></i> Clear Search
+                </a>
+            <% } %>
+        </form>
+    </div>
+
+    <!-- Orders Table Card -->
     <div class="card" style="padding: 0; overflow: hidden;">
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
-                        <th style="padding-left: 2rem;">Order ID</th>
+                        <th style="padding-left: 1.75rem;">Order &amp; Items</th>
                         <th>Customer</th>
-                        <th>Total Amount</th>
+                        <th>Delivery Destination</th>
                         <th>Payment</th>
+                        <th>Total Amount</th>
                         <th>Status</th>
-                        <th>Date</th>
-                        <th style="text-align: right; padding-right: 2rem;">Actions</th>
+                        <th style="text-align: right; padding-right: 1.75rem;">Update Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <% if (typeof orders !=='undefined' && orders.length> 0) { %>
-                        <% orders.forEach(order=> { %>
+                    <% if (orders && orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
                             <tr>
-                                <td style="padding-left: 2rem; color: var(--text-muted);">
-                                    <div style="font-family: monospace; margin-bottom: 8px;">#<%= order._id.toString().substring(order._id.toString().length - 8) %></div>
-                                    <div style="display: flex; gap: 4px; flex-wrap: wrap; max-width: 140px;">
+                                <!-- Order & Items Thumbnail Preview -->
+                                <td style="padding-left: 1.75rem;">
+                                    <div style="font-family: 'Space Mono', monospace; font-weight: 700; color: var(--secondary-color); font-size: 0.9rem; margin-bottom: 0.35rem;">
+                                        #<%= order._id.toString().substring(18) %>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                                        <%= new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
+                                    </div>
+
+                                    <!-- Item Thumbnails -->
+                                    <div style="display: flex; gap: 6px; flex-wrap: wrap; max-width: 180px;">
                                         <% if (order.orderItems && order.orderItems.length > 0) { %>
                                             <% order.orderItems.forEach(item => { %>
-                                                <% let imgSrc = item.image ? (item.image.startsWith('http') || item.image.startsWith('data:') ? item.image : (item.image.startsWith('/') ? item.image : '/' + item.image)) : '/placeholder.jpg'; %>
-                                                <img src="<%= imgSrc %>" alt="Product" title="<%= item.name %> (x<%= item.qty %>)" style="width: 36px; height: 36px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0; background: #fff; cursor: help;">
+                                                <div style="width: 38px; height: 38px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); background: #fff;" title="<%= item.name %> (Qty: <%= item.qty %>)">
+                                                    <img src="<%= item.image || '/images/placeholder.jpg' %>" alt="<%= item.name %>" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/images/placeholder.jpg'">
+                                                </div>
                                             <% }) %>
                                         <% } %>
                                     </div>
                                 </td>
+
+                                <!-- Customer Info -->
                                 <td>
-                                    <div style="font-weight: 500;">
-                                        <%= order.user ? order.user.name : 'Unknown User' %>
+                                    <div style="font-weight: 700; color: var(--secondary-color); font-size: 0.92rem;">
+                                        <%= order.user ? order.user.name : 'Guest User' %>
                                     </div>
-                                    <div style="font-size: 0.85em; color: var(--text-muted);">
-                                        <%= order.user ? order.user.email : '' %>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">
+                                        <%= order.user ? order.user.email : 'N/A' %>
+                                    </div>
+                                    <% if (order.user && order.user.mobile) { %>
+                                        <div style="font-size: 0.78rem; color: var(--text-muted);">
+                                            <i class="fas fa-phone" style="font-size: 0.7rem;"></i> <%= order.user.mobile %>
+                                        </div>
+                                    <% } %>
+                                </td>
+
+                                <!-- Shipping Address -->
+                                <td>
+                                    <% const addr = order.shippingAddress || {}; %>
+                                    <div style="font-size: 0.85rem; color: var(--secondary-color); font-weight: 600;">
+                                        <%= addr.city ? `${addr.city}, ${addr.state || ''}` : 'Address Provided' %>
+                                    </div>
+                                    <div style="font-size: 0.78rem; color: var(--text-muted); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<%= `${addr.street || ''}, ${addr.city || ''}, ${addr.state || ''} ${addr.zipCode || ''} ${addr.country || ''}` %>">
+                                        <%= addr.street || '' %> <%= addr.zipCode || '' %>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">
+                                        <%= addr.country || 'India' %>
                                     </div>
                                 </td>
-                                <td style="font-weight: 600;">₹<%= order.totalPrice.toFixed(2) %>
-                                </td>
+
+                                <!-- Payment Method & Status -->
                                 <td>
-                                    <span style="font-size: 0.9em; color: var(--text-muted);">
-                                        <%= order.paymentMethod %>
-                                    </span>
+                                    <div style="font-weight: 600; font-size: 0.85rem; color: var(--secondary-color); text-transform: uppercase;">
+                                        <%= order.paymentMethod || 'COD' %>
+                                    </div>
                                     <% if (order.isPaid) { %>
-                                        <i class="fas fa-check-circle"
-                                            style="color: #166534; font-size: 0.8em; margin-left: 5px;"
-                                            title="Paid"></i>
-                                        <% } else { %>
-                                            <i class="fas fa-clock"
-                                                style="color: #b91c1c; font-size: 0.8em; margin-left: 5px;"
-                                                title="Unpaid"></i>
-                                            <% } %>
-                                </td>
-                                <td>
-                                    <% let statusClass='status-processing' ; if (order.status==='Shipped' )
-                                        statusClass='status-shipped' ; if (order.status==='Delivered' )
-                                        statusClass='status-delivered' ; if (order.status==='Cancelled' )
-                                        statusClass='status-cancelled' ; %>
-                                        <span class="status-badge <%= statusClass %>">
-                                            <%= order.status %>
+                                        <span style="display: inline-flex; align-items: center; gap: 0.3rem; color: #059669; font-size: 0.75rem; font-weight: 700; background: #ecfdf5; padding: 0.15rem 0.45rem; border-radius: 4px; margin-top: 0.25rem;">
+                                            <i class="fas fa-check-circle"></i> Paid
                                         </span>
+                                    <% } else { %>
+                                        <span style="display: inline-flex; align-items: center; gap: 0.3rem; color: #d97706; font-size: 0.75rem; font-weight: 700; background: #fffbeb; padding: 0.15rem 0.45rem; border-radius: 4px; margin-top: 0.25rem;">
+                                            <i class="fas fa-clock"></i> Pending
+                                        </span>
+                                    <% } %>
                                 </td>
-                                <td class="order-date">
-                                    <%= new Date(order.createdAt).toLocaleDateString() %>
+
+                                <!-- Total Amount -->
+                                <td>
+                                    <strong style="font-size: 1.05rem; color: var(--secondary-color); font-weight: 800;">
+                                        ₹<%= (order.totalPrice || 0).toLocaleString('en-IN') %>
+                                    </strong>
                                 </td>
-                                <td style="text-align: right; padding-right: 2rem;">
-                                    <form action="/admin/orders/<%= order._id %>/status" method="POST"
-                                        style="display: flex; align-items: center; justify-content: flex-end;">
-                                        <select name="status" class="status-select" required>
-                                            <option value="Processing" <%=order.status==='Processing' ? 'selected' : ''
-                                                %>>Processing</option>
-                                            <option value="Shipped" <%=order.status==='Shipped' ? 'selected' : '' %>
-                                                >Shipped</option>
-                                            <option value="Delivered" <%=order.status==='Delivered' ? 'selected' : '' %>
-                                                >Delivered</option>
-                                            <option value="Cancelled" <%=order.status==='Cancelled' ? 'selected' : '' %>
-                                                >Cancelled</option>
+
+                                <!-- Current Status Badge -->
+                                <td>
+                                    <% let badgeClass = 'badge-processing';
+                                       if (order.status === 'Shipped') badgeClass = 'badge-shipped';
+                                       if (order.status === 'Delivered') badgeClass = 'badge-delivered';
+                                       if (order.status === 'Cancelled') badgeClass = 'badge-cancelled';
+                                    %>
+                                    <span class="badge <%= badgeClass %>">
+                                        <span class="badge-dot"></span>
+                                        <%= order.status %>
+                                    </span>
+                                </td>
+
+                                <!-- Status Changer Form -->
+                                <td style="text-align: right; padding-right: 1.75rem;">
+                                    <form action="/admin/orders/<%= order._id %>/status" method="POST" style="display: flex; gap: 0.5rem; justify-content: flex-end; align-items: center;">
+                                        <select name="status" class="form-control" style="width: auto; padding: 0.45rem 0.75rem; font-size: 0.85rem; font-weight: 600; cursor: pointer;">
+                                            <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Processing</option>
+                                            <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                            <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                            <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
                                         </select>
-                                        <button type="submit" class="update-btn" title="Update Status">
-                                            <i class="fas fa-save"></i>
+                                        <button type="submit" class="btn btn-sm btn-primary btn-icon" title="Save Status Change">
+                                            <i class="fas fa-check"></i>
                                         </button>
                                     </form>
                                 </td>
                             </tr>
-                            <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="7"
-                                            style="text-align: center; padding: 3rem; color: var(--text-muted);">
-                                            <i class="fas fa-box-open"
-                                                style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; display: block;"></i>
-                                            No orders found.
-                                        </td>
-                                    </tr>
-                                    <% } %>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 4.5rem 1rem;">
+                                <div style="width: 70px; height: 70px; background: #f8fafc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+                                    <i class="fas fa-box-open" style="font-size: 2.25rem; color: #cbd5e1;"></i>
+                                </div>
+                                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 0.35rem;">No orders match this criteria</h3>
+                                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Try changing your filter tabs or searching with different terms.</p>
+                                <a href="/admin/orders" class="btn btn-secondary">View All Orders</a>
+                            </td>
+                        </tr>
+                    <% } %>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <%- include('footer') %>
+<%- include('footer') %>

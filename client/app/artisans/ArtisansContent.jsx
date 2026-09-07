@@ -2,32 +2,32 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { MapPin, Palette, Award, Zap, Heart, Star } from "lucide-react";
+import { MapPin, Globe, ShieldCheck, Zap, BarChart2, TrendingUp } from "lucide-react";
 
-const artisans = [
+const hubs = [
   {
-    name: "Hahesadi Bamboo Cluster",
-    location: "Hahesadi, Bihar",
-    craft: "Bamboo Products",
-    story: "Hahesadi Bamboo Cluster, Bihar — where tradition meets sustainability. Skilled artisans transform locally sourced bamboo into eco-friendly, handcrafted products, preserving heritage while creating livelihoods for rural communities.",
-    image: "/images/bamboo_cluster.png", // Reusing this for individual story
-    tags: ["Sustainable Living", "Rural Artisans"]
+    name: "South & Southeast Asia Hub",
+    location: "Singapore / Mumbai",
+    category: "Manufacturing & Sourcing",
+    story: "Our largest sourcing network spans textile manufacturing, electronics assembly, and industrial goods across India, Bangladesh, Vietnam, and Thailand — all fully audited and ESG-compliant.",
+    image: "/images/bamboo_cluster.png",
+    tags: ["Manufacturing", "Sourcing"]
   },
   {
-    name: "Sitapur Moonj Cluster",
-    location: "Sitapur, Uttar Pradesh",
-    craft: "Moonj Grass",
-    story: "Sitapur Moonj Cluster, Uttar Pradesh — a hub of traditional craftsmanship where artisans weave natural moonj grass into beautifully handcrafted rugs. Blending sustainability with heritage, each piece reflects skilled artistry while supporting rural livelihoods.",
+    name: "East Asia Procurement Hub",
+    location: "Shanghai / Seoul",
+    category: "High-Value Components",
+    story: "Specialized procurement of precision-engineered components, consumer electronics, and advanced materials from China, South Korea, and Japan — with rigorous IP protection protocols.",
     image: "/images/moonj_cluster.png",
-    tags: ["Eco-Friendly", "Natural Fiber"]
+    tags: ["Components", "Technology"]
   },
   {
-    name: "Peshrar Rugs Cluster",
-    location: "Peshrar, Jharkhand",
-    craft: "Rug Weaving",
-    story: "Peshrar Rugs Cluster, Jharkhand — a vibrant center of rug weaving where skilled artisans craft intricate, handwoven rugs rooted in tradition. Each piece reflects cultural heritage, sustainable practices, and the dedication of rural communities.",
+    name: "Middle East & Africa Hub",
+    location: "Dubai / Nairobi",
+    category: "Raw Materials & Commodities",
+    story: "We manage raw material corridors across the Gulf and Sub-Saharan Africa, facilitating compliant commodity procurement and last-mile distribution for enterprise buyers.",
     image: "/images/rug_jharkhand.png",
-    tags: ["Handwoven Rugs", "Skill Trainer"]
+    tags: ["Commodities", "Distribution"]
   }
 ];
 
@@ -40,32 +40,32 @@ const fadeIn = {
 
 export default function ArtisansPage() {
   return (
-    <div className="bg-[#fdfbf7] min-h-screen">
+    <div className="bg-slate-50 min-h-screen">
       {/* ── Hero Section ────────────────────────────────────────── */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <Image
           src="/images/artisans_hero.png"
-          alt="Our artisans"
+          alt="Global supply network"
           fill
-          className="object-cover brightness-75 scale-105"
+          className="object-cover brightness-50 scale-105"
           priority
         />
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-slate-900/40" />
         <div className="relative z-10 text-center text-white px-4 max-w-4xl">
           <motion.span
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-amber-400 font-bold uppercase tracking-[0.3em] text-xs mb-4 block"
+            className="text-sky-400 font-bold uppercase tracking-[0.3em] text-xs mb-4 block"
           >
-            The Soul of Bal Jyoti
+            Our Global Partner Network
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-serif font-bold mb-6"
+            className="text-5xl md:text-7xl font-bold mb-6"
           >
-            The Hands that <span className="text-amber-400 italic">Heal</span>.
+            The Hubs That <span className="text-sky-400 italic">Power</span> Trade.
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -73,57 +73,58 @@ export default function ArtisansPage() {
             transition={{ delay: 0.4 }}
             className="text-lg md:text-xl font-light opacity-90 max-w-3xl mx-auto leading-relaxed"
           >
-            Meet the master craftspeople who transform raw natural fibers into pieces of
-            timeless art. Behind every product is a name, a family, and a thousand-year-old legacy.
+            Alight International operates strategic sourcing and distribution hubs across
+            three continents — giving enterprise clients reliable access to the world's most
+            competitive manufacturing regions.
           </motion.p>
         </div>
       </section>
 
-      {/* ── Meet the Masters ──────────────────────────────────────── */}
+      {/* ── Global Sourcing Hubs ──────────────────────────────────── */}
       <section className="py-24 px-6 max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">Meet the Masters</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">Our artisans aren't just suppliers; they are our partners, our mentors, and the guardians of India's heritage.</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Our Sourcing Hubs</h2>
+          <p className="text-slate-500 max-w-2xl mx-auto">Each hub is a fully operational sourcing centre with dedicated procurement teams, compliance officers, and logistics coordinators on the ground.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {artisans.map((artisan, index) => (
+          {hubs.map((hub, index) => (
             <motion.div
               key={index}
               variants={fadeIn}
               initial="initial"
               whileInView="whileInView"
               viewport="viewport"
-              className="bg-white rounded-none overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 group"
+              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 group"
             >
-              <div className="relative h-80 w-full overflow-hidden">
+              <div className="relative h-72 w-full overflow-hidden">
                 <Image
-                  src={artisan.image}
-                  alt={artisan.name}
+                  src={hub.image}
+                  alt={hub.name}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-4 left-4 flex gap-2">
-                  {artisan.tags.map(tag => (
-                    <span key={tag} className="px-3 py-1 bg-amber-400 text-gray-900 text-[10px] font-bold rounded-none uppercase tracking-wider">
+                  {hub.tags.map(tag => (
+                    <span key={tag} className="px-3 py-1 bg-sky-500 text-white text-[10px] font-bold rounded-full uppercase tracking-wider">
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
               <div className="p-8">
-                <div className="flex items-center gap-2 text-amber-600 mb-2">
+                <div className="flex items-center gap-2 text-sky-600 mb-2">
                   <MapPin size={14} />
-                  <span className="text-xs font-bold uppercase tracking-widest">{artisan.location}</span>
+                  <span className="text-xs font-bold uppercase tracking-widest">{hub.location}</span>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{artisan.name}</h3>
-                <span className="text-[#1a5b3a] font-semibold text-sm block mb-4 italic">{artisan.craft}</span>
-                <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                  {artisan.story}
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">{hub.name}</h3>
+                <span className="text-sky-600 font-semibold text-sm block mb-4 italic">{hub.category}</span>
+                <p className="text-slate-500 text-sm leading-relaxed mb-6">
+                  {hub.story}
                 </p>
-                <button className="w-full py-3 bg-gray-50 text-gray-700 font-bold text-xs uppercase tracking-widest rounded-none hover:bg-[#1a5b3a] hover:text-white transition-all">
-                  Read Full Story
+                <button className="w-full py-3 bg-slate-50 text-slate-700 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-sky-600 hover:text-white transition-all">
+                  View Hub Details
                 </button>
               </div>
             </motion.div>
@@ -131,32 +132,32 @@ export default function ArtisansPage() {
         </div>
       </section>
 
-      {/* ── Craft Regions ─────────────────────────────────────────── */}
-      <section className="bg-[#1a3a1a] py-24 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
+      {/* ── Coverage Map ──────────────────────────────────────────── */}
+      <section className="bg-slate-900 py-24 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
           <Image src="/images/lotus_icon.png" alt="" fill className="object-contain scale-150 rotate-12" />
         </div>
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center gap-16">
           <div className="w-full md:w-1/2 space-y-8">
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white leading-tight">
-              Crafting Across the <span className="text-amber-400">Heartland</span>.
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Sourcing Across the <span className="text-sky-400">Globe</span>.
             </h2>
             <p className="text-white/70 text-lg leading-relaxed">
-              We focus our interventions in regions where craft traditions are deepest but
-              opportunities are fewest. By establishing cooperatives in these hubs, we
-              ensure economic stability for entire communities.
+              Our global network spans every major manufacturing corridor, ensuring you always
+              have access to the most competitive pricing, fastest lead times, and
+              highest compliance standards — regardless of where your goods originate.
             </p>
             <div className="grid grid-cols-2 gap-6">
               {[
-                { label: "Bihar", count: "12 Villages", crafts: "Sikki, Madhubani" },
-                { label: "Jharkhand", count: "8 Villages", crafts: "Bamboo, Tussar" },
-                { label: "Uttar Pradesh", count: "5 Villages", crafts: "Bhadohi Rugs" },
-                { label: "West Bengal", count: "4 Villages", crafts: "Jute Weaving" },
+                { label: "South & SE Asia", count: "28 Countries", detail: "Textiles, Electronics, Industrial" },
+                { label: "East Asia", count: "5 Countries", detail: "Components, Tech, Precision Parts" },
+                { label: "Middle East", count: "12 Countries", detail: "Commodities, Energy, Distribution" },
+                { label: "Europe & Americas", count: "18 Countries", detail: "Premium Goods, Distribution" },
               ].map((region, i) => (
-                <div key={i} className="p-6 bg-white/5 border border-white/10 rounded-none hover:bg-white/10 transition-colors duration-300">
-                  <h4 className="text-amber-400 font-bold mb-1">{region.label}</h4>
+                <div key={i} className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors duration-300">
+                  <h4 className="text-sky-400 font-bold mb-1">{region.label}</h4>
                   <p className="text-white text-xs mb-2 opacity-60 italic">{region.count}</p>
-                  <p className="text-white text-sm font-medium">{region.crafts}</p>
+                  <p className="text-white text-sm font-medium">{region.detail}</p>
                 </div>
               ))}
             </div>
@@ -166,22 +167,22 @@ export default function ArtisansPage() {
             whileInView={{ opacity: 1, x: 0 }}
             className="w-full md:w-1/2"
           >
-            <div className="relative aspect-square md:aspect-[4/3] rounded-none overflow-hidden shadow-2xl border-2 border-amber-400/20 bg-black/40">
+            <div className="relative aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border-2 border-sky-400/20 bg-black/40">
               <Image
                 src="/images/india_craft_map.png"
-                alt="Interactive map of craft regions in India"
+                alt="Global trade network map"
                 fill
                 className="object-cover opacity-80 mix-blend-screen"
                 unoptimized
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1a3a1a]/80 via-transparent to-transparent pointer-events-none" />
-              
-              {/* Interactive Markers */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent pointer-events-none" />
+
+              {/* Interactive Region Markers */}
               {[
-                { name: "Uttar Pradesh", top: "42%", left: "48%" },
-                { name: "Bihar", top: "52%", left: "62%" },
-                { name: "Jharkhand", top: "60%", left: "59%" },
-                { name: "West Bengal", top: "60%", left: "68%" }
+                { name: "Singapore Hub", top: "62%", left: "72%" },
+                { name: "Dubai Hub", top: "44%", left: "54%" },
+                { name: "Shanghai Hub", top: "38%", left: "78%" },
+                { name: "Mumbai Hub", top: "52%", left: "60%" }
               ].map((loc, idx) => (
                 <div
                   key={idx}
@@ -191,13 +192,13 @@ export default function ArtisansPage() {
                   <motion.div
                     animate={{ scale: [1, 1.8, 1], opacity: [0.6, 0, 0.6] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: idx * 0.4 }}
-                    className="absolute w-8 h-8 bg-amber-400/50 rounded-full"
+                    className="absolute w-8 h-8 bg-sky-400/50 rounded-full"
                   />
-                  <div className="relative w-3 h-3 bg-amber-400 rounded-full border-2 border-[#1a3a1a] shadow-[0_0_15px_rgba(251,191,36,0.8)] group-hover:scale-150 transition-transform duration-300" />
-                  
+                  <div className="relative w-3 h-3 bg-sky-400 rounded-full border-2 border-slate-900 shadow-[0_0_15px_rgba(56,189,248,0.8)] group-hover:scale-150 transition-transform duration-300" />
+
                   {/* Tooltip */}
-                  <div className="absolute mt-14 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-[#112411]/90 text-amber-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-none whitespace-nowrap border border-amber-400/30 backdrop-blur-md shadow-xl">
-                    <span className="block mb-1 opacity-70 text-[8px] leading-none">Craft Region</span>
+                  <div className="absolute mt-14 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-slate-900/90 text-sky-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg whitespace-nowrap border border-sky-400/30 backdrop-blur-md shadow-xl">
+                    <span className="block mb-1 opacity-70 text-[8px] leading-none">Alight Hub</span>
                     {loc.name}
                   </div>
                 </div>
@@ -207,29 +208,33 @@ export default function ArtisansPage() {
         </div>
       </section>
 
-      {/* ── Collaborative Process ─────────────────────────────────── */}
+      {/* ── Operational Process ────────────────────────────────────── */}
       <section className="py-24 px-6 max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <span className="text-sky-600 font-bold uppercase tracking-[0.2em] text-xs">How We Work</span>
+          <h2 className="text-3xl font-bold text-slate-900 mt-3">Our Supply Chain Process</h2>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {[
             {
-              Icon: Palette,
-              title: "Design Synthesis",
-              desc: "We work with artisans to blend traditional motifs with modern utility."
+              Icon: Globe,
+              title: "Global Sourcing",
+              desc: "We identify and qualify the best suppliers across our global network for your specific requirements."
             },
             {
-              Icon: Star,
-              title: "Raw Purity",
-              desc: "Every material is sourced locally and sustainably within 10km of the village."
+              Icon: ShieldCheck,
+              title: "Compliance Audit",
+              desc: "Every supplier undergoes rigorous ethical, quality, and regulatory compliance audits."
             },
             {
-              Icon: Award,
-              title: "Quality Mastery",
-              desc: "Rigorous quality checks performed by village-level master artisans."
+              Icon: Zap,
+              title: "Rapid Procurement",
+              desc: "Streamlined RFQ-to-PO processes that cut lead times by up to 40% vs. traditional models."
             },
             {
-              Icon: Heart,
-              title: "Dignified Wages",
-              desc: "Wages are paid twice a month, empowering artisans to plan for their futures."
+              Icon: BarChart2,
+              title: "Live Tracking",
+              desc: "Real-time shipment tracking and performance analytics delivered to your dashboard."
             },
           ].map((item, i) => (
             <motion.div
@@ -239,11 +244,11 @@ export default function ArtisansPage() {
               whileInView="whileInView"
               className="text-center space-y-4"
             >
-              <div className="w-20 h-20 mx-auto bg-gray-50 rounded-none flex items-center justify-center text-[#1a5b3a] border border-emerald-100 hover:bg-emerald-50 transition-colors duration-300">
+              <div className="w-20 h-20 mx-auto bg-sky-50 rounded-2xl flex items-center justify-center text-sky-600 border border-sky-100 hover:bg-sky-600 hover:text-white transition-colors duration-300">
                 <item.Icon size={32} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+              <h3 className="text-xl font-bold text-slate-900">{item.title}</h3>
+              <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}
         </div>

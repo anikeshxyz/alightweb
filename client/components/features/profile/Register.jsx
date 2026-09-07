@@ -134,7 +134,7 @@ const Register = () => {
                 <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-8 text-center pb-6">
                     <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
                     <p className="text-gray-500 text-sm mt-1">
-                        {step === 1 ? "Join Baljyoti and start shopping" : "Verify your mobile number"}
+                        {step === 1 ? "Join Alight International to manage enterprise orders" : "Verify your mobile number"}
                     </p>
                 </div>
 

@@ -8,13 +8,12 @@ import 'jspdf-autotable';
 const PAGE = { width: 210, height: 297, margin: 10, innerWidth: 190 };
 
 const COLORS = {
-    black: [20, 20, 20],
-    darkGray: [40, 40, 50],
+    blue: [2, 132, 199],
+    darkSlate: [15, 23, 42],
     midGray: [80, 80, 80],
-    lightGray: [100, 100, 100],
-    green: [26, 91, 58],
-    gold: [150, 100, 0],
-    signature: [180, 180, 200],
+    lightGray: [210, 210, 210],
+    tableHeader: [240, 245, 250],
+    signature: [20, 40, 80],
 };
 
 const FONTS = {
@@ -24,19 +23,19 @@ const FONTS = {
 };
 
 const COMPANY = {
-    name: 'Bal Jyoti Design Pvt. Ltd.',
-    address: 'PLOT NO-321 C/O JYOTI DEVI ROAD NO-1 Bodh Gaya',
-    phone: '9934932001',
+    name: 'Alight International Pvt. Ltd.',
+    address: 'Global Trade Center, Corporate Tower',
+    phone: '+1 (800) 000-0000',
     gstin: '10AAMCB7443B1Z5',
-    email: 'baljyoti.design@gmail.com',
-    state: '10-Bihar',
+    email: 'contact@alightinternational.com',
+    state: 'Global Operations',
     bank: {
-        name: 'BANK OF INDIA, BODH GAYA',
+        name: 'INTERNATIONAL COMMERCIAL BANK',
         accountNo: '447920110000276',
         ifsc: 'BKID0004479',
-        accountHolder: 'BAL JYOTI DESIGN PRIVATE LIMITED',
+        accountHolder: 'ALIGHT INTERNATIONAL PRIVATE LIMITED',
     },
-    signatory: 'Gauri Kumari',
+    signatory: 'Authorized Officer',
 };
 
 const GST_RATE = 5;   // percent
@@ -135,25 +134,24 @@ function renderHeader(doc, y, logoBase64) {
         doc.addImage(logoBase64, 'PNG', 12, y + 3, 24, 24);
     } else {
         // — Logo Fallback —
-        setFont(doc, FONTS.bold, 32, COLORS.green);
-        doc.text('JB', 20, y + 16, { angle: 10 });
-        doc.text('B', 16, y + 22);
+        setFont(doc, FONTS.bold, 24, COLORS.blue);
+        doc.text('ALIGHT', 14, y + 16);
 
-        setFont(doc, FONTS.bold, 9, COLORS.gold);
-        doc.text('BAL JYOTI', 14, y + 26);
+        setFont(doc, FONTS.bold, 8, COLORS.darkSlate);
+        doc.text('INTERNATIONAL', 14, y + 23);
 
-        doc.setDrawColor(...COLORS.green);
-        vLine(doc, 38, y + 2, y + 28);
+        doc.setDrawColor(...COLORS.blue);
+        vLine(doc, 48, y + 2, y + 28);
         doc.setDrawColor(...COLORS.lightGray);
     }
 
     // — Company name —
-    setFont(doc, FONTS.bold, 16, [40, 40, 50]);
-    doc.text(COMPANY.name, 42, y + 10);
+    setFont(doc, FONTS.bold, 15, COLORS.darkSlate);
+    doc.text(COMPANY.name, 52, y + 10);
 
     // — Address & contact details —
     setFont(doc, FONTS.normal, 8, COLORS.midGray);
-    doc.text(COMPANY.address, 42, y + 16);
+    doc.text(COMPANY.address, 52, y + 16);
 
     const labelValue = (label, value, x, ly) => {
         setFont(doc, FONTS.bold, 8, COLORS.midGray);
@@ -457,7 +455,7 @@ function renderBankDetails(doc, y) {
     // — Headings —
     setFont(doc, FONTS.bold, 8.5, [50, 50, 50]);
     doc.text('Bank Details:', 12, y + 4);
-    doc.text('For Bal Jyoti Design Pvt. Ltd.:', 102, y + 4);
+    doc.text('For Alight International Pvt. Ltd.:', 102, y + 4);
 
     // — Bank info rows —
     const bankRow = (label, value, ly) => {
@@ -490,11 +488,11 @@ const loadLogo = () => {
     return new Promise((resolve) => {
         const img = new Image();
         img.crossOrigin = "Anonymous";
-        img.src = '/images/logo.png';
+        img.src = '/images/alight_logo.svg';
         img.onload = () => {
             const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
+            canvas.width = img.width || 360;
+            canvas.height = img.height || 80;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
             resolve(canvas.toDataURL('image/png'));
@@ -530,5 +528,5 @@ export async function generateInvoice(order, currentUser = null) {
     renderBankDetails(doc, y);
 
     const orderId = shortOrderId(order._id);
-    doc.save(`Tax_Invoice_BALJYOTI_${orderId}.pdf`);
+    doc.save(`Tax_Invoice_ALIGHT_${orderId}.pdf`);
 }

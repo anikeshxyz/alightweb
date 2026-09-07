@@ -7,31 +7,30 @@ import { AuthProvider } from "@/context/AuthContext";
 import Footer from "@/components/layout/Footer/Footer";
 import { Toaster } from "react-hot-toast";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://baljyotidesign.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://alightinternational.com";
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Bal Jyoti Design — Authentic Indian Handcrafts",
-    template: "%s | Bal Jyoti Design",
+    default: "Alight International — Global Solutions & Premium International Trade",
+    template: "%s | Alight International",
   },
   description:
-    "Discover handmade treasures from rural India — bamboo crafts, sikki baskets, handloom rugs & more. Every product supports a real artisan family and preserves a centuries-old heritage.",
+    "Alight International delivers premium global trade solutions, quality-certified products, and reliable cross-border supply chain operations.",
   keywords: [
-    "Indian handcrafts",
-    "bamboo crafts",
-    "sikki baskets",
-    "moonj grass",
-    "handloom rugs",
-    "artisan products",
-    "ethical fashion",
-    "sustainable gifts",
-    "Bihar crafts",
-    "buy handmade India",
+    "Alight International",
+    "global trade",
+    "international commerce",
+    "quality products",
+    "supply chain solutions",
+    "custom manufacturing",
+    "enterprise distribution",
+    "bulk orders",
+    "international export",
   ],
-  authors: [{ name: "Bal Jyoti Design", url: SITE_URL }],
-  creator: "Bal Jyoti Design",
-  publisher: "Bal Jyoti Design",
+  authors: [{ name: "Alight International", url: SITE_URL }],
+  creator: "Alight International",
+  publisher: "Alight International",
   robots: {
     index: true,
     follow: true,
@@ -39,28 +38,28 @@ export const metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_IN",
+    locale: "en_US",
     url: SITE_URL,
-    siteName: "Bal Jyoti Design",
-    title: "Bal Jyoti Design — Authentic Indian Handcrafts",
+    siteName: "Alight International",
+    title: "Alight International — Global Solutions & Premium International Trade",
     description:
-      "Handcrafted bamboo, sikki, moonj & handloom products from rural Bihar. Supporting 500+ artisans across 15 villages.",
+      "Delivering premium global trade solutions, quality-certified products, and reliable enterprise distribution worldwide.",
     images: [
       {
-        url: `${SITE_URL}/images/og-cover.jpg`,
+        url: `${SITE_URL}/images/alight_logo.svg`,
         width: 1200,
         height: 630,
-        alt: "Bal Jyoti Design — Authentic Indian Handcrafts",
+        alt: "Alight International",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Bal Jyoti Design — Authentic Indian Handcrafts",
+    title: "Alight International — Global Solutions & Premium International Trade",
     description:
-      "Handcrafted bamboo, sikki, moonj & handloom products from rural Bihar.",
-    images: [`${SITE_URL}/images/og-cover.jpg`],
-    creator: "@baljyotidesign",
+      "Delivering premium global trade solutions, quality-certified products, and reliable enterprise distribution worldwide.",
+    images: [`${SITE_URL}/images/alight_logo.svg`],
+    creator: "@alightinternational",
   },
   alternates: {
     canonical: SITE_URL,
@@ -70,11 +69,10 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  // Allow user zoom for accessibility — WCAG 1.4.4
 };
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Inter, Outfit } from 'next/font/google';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -82,34 +80,29 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-const playfair = Playfair_Display({
+const outfit = Outfit({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-playfair',
+  variable: '--font-heading',
 });
 
 export default function RootLayout({ children }) {
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Bal Jyoti Design",
+    name: "Alight International",
     url: SITE_URL,
-    logo: `${SITE_URL}/images/logo.png`,
+    logo: `${SITE_URL}/images/alight_logo.svg`,
     description:
-      "Authentic Indian handcraft brand from Bihar, empowering 500+ artisans across 15 villages with bamboo crafts, sikki baskets, handloom rugs and more.",
+      "Alight International is a premier global enterprise offering certified products, international distribution, and bespoke corporate supply solutions.",
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Bihar",
-      addressCountry: "IN",
+      addressCountry: "International",
     },
-    sameAs: [
-      "https://www.facebook.com/baljyotidesign",
-      "https://www.instagram.com/baljyotidesign",
-    ],
   };
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${outfit.variable}`}>
       <head>
         <script
           type="application/ld+json"

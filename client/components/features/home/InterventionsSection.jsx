@@ -4,82 +4,81 @@ import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
 const interventions = [
   {
-    id: "lohardaga",
-    location: "Lohardaga, Jharkhand",
-    title: "The Rugs of Peshrar",
+    id: "cnc-forming",
+    location: "Advanced CNC Manufacturing Plant",
+    title: "Automated CNC Wire Bending & Forming",
     description:
-      "In the rugged terrains of Lohardaga, we've partnered with the Peshrar cluster to revive ancestral rug weaving. 200+ tribal families now blend raw artistic instinct with modern quality standards — creating pieces that carry centuries of story into modern homes.",
-    image: "/images/rug_jharkhand.png",
-    cardBg: "#EEDC5B",
-    textColor: "#1a1200",
-    accent: "#b89a00",
-    cluster: "Peshrar Cluster",
-    families: 200, craft: "Rug Weaving", year: "2019", tag: "Heritage",
+      "Computerized multi-axis CNC bending systems ensure microscopic dimensional precision (±0.1mm) across all kitchen baskets, plate stands, and pantry pull-out units.",
+    image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&auto=format&fit=crop&q=80",
+    cardBg: "#0f172a",
+    textColor: "#f8fafc",
+    accent: "#E51921",
+    cluster: "Wire Forming Division",
+    families: "±0.1mm", craft: "CNC Precision", year: "2015", tag: "Automated",
   },
   {
-    id: "bodhgaya",
-    location: "Bodhgaya, Bihar",
-    title: "Bamboo Mastery",
+    id: "laser-welding",
+    location: "Robotic Fabrication & Assembly Line",
+    title: "Robotic TIG Welding & Seamless Joints",
     description:
-      "Beyond Bodhgaya's spiritual echo lies the Hahesadi Bamboo Cluster. We help craftsmen diversify — turning everyday bamboo into high-end sustainable décor that finds homes in conscious living rooms across the world.",
-    image: "/images/bamboo_cluster.png",
-    cardBg: "#1F3D22",
-    textColor: "#e8f5e9",
-    accent: "#6ee06e",
-    cluster: "Hahesadi Cluster",
-    families: 150, craft: "Bamboo Craft", year: "2020", tag: "Sustainable",
+      "High-frequency robotic TIG welding creates zero-crevice, high-tensile joints that resist heavy dynamic loads without weld discoloration or joint fatigue.",
+    image: "https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?w=1000&auto=format&fit=crop&q=80",
+    cardBg: "#1e293b",
+    textColor: "#f8fafc",
+    accent: "#38bdf8",
+    cluster: "Welding & Assembly",
+    families: "45kg+", craft: "Robotic TIG", year: "2018", tag: "Seamless",
   },
   {
-    id: "sitapur",
-    location: "Sitapur, Uttar Pradesh",
-    title: "Moonj Grass Revival",
+    id: "surface-treatment",
+    location: "Automated Surface Treatment Plant",
+    title: "Triple-Layer Anti-Rust Chrome Plating",
     description:
-      "Women artisans in Sitapur now lead self-help groups that weave moonj grass into sophisticated home accessories — sending a thousand-year-old tradition into living rooms worldwide and reclaiming their economic independence.",
-    image: "/images/moonj_cluster.png",
-    cardBg: "#8B2500",
-    textColor: "#fff3ee",
-    accent: "#f8b76b",
-    cluster: "Sitapur Cluster",
-    families: 180, craft: "Moonj Weaving", year: "2021", tag: "Women-led",
+      "Multi-stage electroplating with high-density nickel base and specular chrome finish delivers 480-hour salt-spray tested rust immunity in high-humidity kitchens.",
+    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1000&auto=format&fit=crop&q=80",
+    cardBg: "#0a1128",
+    textColor: "#f8fafc",
+    accent: "#0284c7",
+    cluster: "Passivation & Plating",
+    families: "480hr", craft: "Salt Spray Tested", year: "2020", tag: "Anti-Rust",
   },
   {
-    id: "kutch",
-    location: "Kutch, Gujarat",
-    title: "Ajrakh Printing",
+    id: "quality-testing",
+    location: "Certified Quality Assurance Laboratory",
+    title: "AQL Level II & 50,000 Cycle Testing",
     description:
-      "The timeless art of Ajrakh block printing finds new expression in Kutch. We work with master craftsmen on sustainable natural dyeing, bringing ancient geometric patterns into contemporary lifestyle products that travel globally.",
-    image: "/images/folk_painting.png",
-    cardBg: "#1E0B3A",
-    textColor: "#ede7f6",
-    accent: "#b39ddb",
-    cluster: "Dhamadka Cluster",
-    families: 120, craft: "Block Printing", year: "2022", tag: "Artisan",
+      "Rigorous cyclic endurance machines test soft-close runners, slide dampers, and basket deflection under full capacity to ensure flawless long-term performance.",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1000&auto=format&fit=crop&q=80",
+    cardBg: "#111827",
+    textColor: "#f8fafc",
+    accent: "#E51921",
+    cluster: "QA & Reliability Labs",
+    families: "50K+", craft: "Cycle Tested", year: "2022", tag: "AQL Level II",
   },
   {
-    id: "sualkuchi",
-    location: "Sualkuchi, Assam",
-    title: "Golden Silk Heritage",
+    id: "automated-dispatch",
+    location: "Central Logistics & Export Terminal",
+    title: "Shockproof Packaging & Global Staging",
     description:
-      "In Assam's silk village, we provide modern loom technology to weavers of Muga and Eri silk — ensuring golden threads that have shimmered for centuries keep shimmering for centuries more, connecting ancient looms to global markets.",
-    image: "/images/khadi_banner.png",
-    cardBg: "#3D2800",
-    textColor: "#fff8e1",
-    accent: "#ffd54f",
-    cluster: "Sualkuchi Cluster",
-    families: 90, craft: "Silk Weaving", year: "2023", tag: "Golden Thread",
+      "High-density custom EPS foam cushioning and barcode-scanned palletization protect mirror-polished products during multi-modal domestic and international transit.",
+    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1000&auto=format&fit=crop&q=80",
+    cardBg: "#0f172a",
+    textColor: "#f8fafc",
+    accent: "#38bdf8",
+    cluster: "Packaging & Logistics",
+    families: "99.8%", craft: "OTIF Delivery", year: "2023", tag: "Global Dispatch",
   },
 ];
 
 const TOTAL = interventions.length;
 
 const stats = [
-  { value: 740, suffix: "+", label: "Artisan Families" },
-  { value: 5, suffix: "", label: "Clusters Partnered" },
-  { value: 14, suffix: "+", label: "States Reached" },
-  { value: 4, suffix: "x", label: "Income Growth" },
+  { value: 50000, suffix: "+", label: "Cycle Durability Tested" },
+  { value: 100, suffix: "%", label: "SS 304 Grade Certified" },
+  { value: 480, suffix: " hrs", label: "Salt Spray Rust Tested" },
+  { value: 99, suffix: ".8%", label: "On-Time In-Full Delivery" },
 ];
 
 // ─── Counter hook ──────────────────────────────────────────────────────────────
@@ -344,14 +343,14 @@ export default function InterventionsSection() {
     <>
       {/* Section title — sits in normal flow, scrolls into view before the deck pins */}
       <div style={{ background: '#0a0a0a' }} className="pt-20 pb-12 md:pt-28 md:pb-16 px-6 text-center">
-        <p className="font-inter text-[10px] font-bold tracking-[0.34em] uppercase text-white/50 flex items-center justify-center gap-2 mb-3">
-          <span className="h-px w-5 bg-white/20" /> Ground Realities <span className="h-px w-5 bg-white/20" />
+        <p className="font-inter text-[10px] font-bold tracking-[0.34em] uppercase text-red-500 flex items-center justify-center gap-2 mb-3">
+          <span className="h-px w-5 bg-red-500/40" /> Engineering Excellence &amp; Infrastructure <span className="h-px w-5 bg-red-500/40" />
         </p>
-        <h2 className="font-playfair text-4xl md:text-6xl font-bold text-white">Our Clusters</h2>
+        <h2 className="font-heading text-3xl md:text-5xl font-bold text-white uppercase">Precision Manufacturing Hubs</h2>
       </div>
 
       {/* Scroll track: TOTAL × 100vh — each 100vh "deals" the next card to the front */}
-      <div ref={wrapperRef} style={{ height: `${TOTAL * 100}vh` }} aria-label="Our Clusters — scroll to deal through each story">
+      <div ref={wrapperRef} style={{ height: `${TOTAL * 100}vh` }} aria-label="Global Supply Hubs — scroll to explore each hub">
         <div className="sticky top-0 overflow-hidden" style={{ height: '100vh', background: '#0a0a0a' }}>
 
           {/* Counter — top right */}

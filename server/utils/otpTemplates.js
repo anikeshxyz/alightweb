@@ -18,15 +18,15 @@ export const DEFAULT_OTP_LANG = process.env.OTP_LANG || 'en';
 // Human-readable text, with the OTP substituted in (used for logs / docs).
 export const OTP_TEMPLATES = {
     en: (otp) =>
-        `${otp} is your OTP for Bal Jyoti Design. Valid for 10 minutes. Do not share it with anyone.`,
+        `${otp} is your verification code for Alight International. Valid for 10 minutes. Do not share it with anyone.`,
     hi: (otp) =>
-        `${otp} आपका Bal Jyoti Design का OTP है। यह 10 मिनट के लिए मान्य है। इसे किसी के साथ साझा न करें।`,
+        `${otp} आपका Alight International का verification code है। यह 10 मिनट के लिए मान्य है।`,
 };
 
 // The exact strings to register on the DLT portal (variable = {#var#}).
 export const DLT_TEMPLATE_TEXT = {
-    en: '{#var#} is your OTP for Bal Jyoti Design. Valid for 10 minutes. Do not share it with anyone.',
-    hi: '{#var#} आपका Bal Jyoti Design का OTP है। यह 10 मिनट के लिए मान्य है। इसे किसी के साथ साझा न करें।',
+    en: '{#var#} is your verification code for Alight International. Valid for 10 minutes. Do not share it with anyone.',
+    hi: '{#var#} आपका Alight International का verification code है। यह 10 मिनट के लिए मान्य है।',
 };
 
 export const getOtpMessage = (otp, lang = DEFAULT_OTP_LANG) =>

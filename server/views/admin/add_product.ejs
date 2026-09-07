@@ -1,169 +1,209 @@
-<%- include('header', { path: '/products', admin: admin }) %>
+<%- include('header', { path: '/products', admin: admin, title: 'Add New Product' }) %>
 
-    <style>
-        .form-group-interactive { position: relative; margin-bottom: 1.5rem; }
-        .form-control-interactive {
-            transition: all 0.3s; width: 100%; padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color); border-radius: 0.5rem;
-            background-color: #f8fafc; color: var(--text-main); font-family: inherit;
-        }
-        .form-control-interactive:focus {
-            border-color: var(--primary-color); box-shadow: 0 0 0 3px var(--primary-light);
-            outline: none; background-color: #fff;
-        }
-        .upload-btn-wrapper { position: relative; overflow: hidden; display: inline-block; margin-bottom: 10px; }
-        .upload-btn-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
-        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-
-    <div style="margin-bottom: 20px; animation: fade-in 0.3s ease-out;">
-        <a href="/admin/products" style="color: var(--text-muted); text-decoration: none; font-weight: 500;">
-            <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back to Products
+    <div style="margin-bottom: 1.5rem;">
+        <a href="/admin/products" style="color: var(--text-muted); font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-arrow-left"></i> Back to Product Catalog
         </a>
     </div>
 
-    <div class="card" style="max-width: 800px; margin: 0 auto; animation: fade-in 0.5s ease-out;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
-            <h2 style="margin: 0; color: var(--text-main);">Add New Product</h2>
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger">
+            <i class="fas fa-circle-exclamation"></i>
+            <span><%= error %></span>
+        </div>
+    <% } %>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success">
+            <i class="fas fa-circle-check"></i>
+            <span>Product added successfully!</span>
+        </div>
+    <% } %>
+
+    <div class="card" style="max-width: 900px; margin: 0 auto;">
+        <div class="card-header">
+            <div>
+                <h2 class="card-title" style="font-size: 1.4rem;">Add New Product</h2>
+                <p style="color: var(--text-muted); font-size: 0.88rem; margin: 0.2rem 0 0 0;">Fill in details, specifications, and media assets for this product.</p>
+            </div>
         </div>
 
-        <% if (typeof success !== 'undefined' && success) { %>
-            <div style="background-color: #dcfce7; color: #166534; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; border: 1px solid #bbf7d0; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-check-circle" style="font-size: 1.2rem;"></i>
-                <span style="font-weight: 500;">Product Added Successfully!</span>
-            </div>
-        <% } %>
-
         <form action="/admin/products/add" method="POST" enctype="multipart/form-data" id="addProductForm">
+            <!-- Section 1: Basic Information -->
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-info-circle" style="color: var(--primary-color);"></i> 1. Basic Information
+            </h3>
 
-            <div class="form-group form-group-interactive">
-                <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Product Name</label>
-                <input type="text" name="name" class="form-control-interactive" required placeholder="Enter product name">
+            <div class="form-group">
+                <label>Product Title <span style="color: #ef4444;">*</span></label>
+                <input type="text" name="name" class="form-control" required placeholder="e.g. Heavy-Duty Tall Pantry Pull-Out Unit (6-Tier)">
             </div>
 
-            <div class="form-group form-group-interactive">
-                <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Description</label>
-                <textarea name="description" class="form-control-interactive" rows="4" required placeholder="Enter product description"></textarea>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                <div class="form-group form-group-interactive">
-                    <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Original Price / MRP (₹)</label>
-                    <input type="number" name="originalPrice" class="form-control-interactive" step="0.01" placeholder="e.g. 700">
-                    <small style="color: var(--text-muted); font-size: 0.8em; margin-top: 5px; display: block;">Leave blank if no discount.</small>
-                </div>
-                <div class="form-group form-group-interactive">
-                    <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Selling Price (₹)</label>
-                    <input type="number" name="price" class="form-control-interactive" step="0.01" required placeholder="e.g. 500">
-                </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                <div class="form-group form-group-interactive">
-                    <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Discount Label</label>
-                    <input type="text" name="discount" class="form-control-interactive" placeholder="e.g. '15% OFF', 'SALE', 'HOT'">
-                </div>
-                <div class="form-group form-group-interactive">
-                    <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Count In Stock</label>
-                    <input type="number" name="countInStock" class="form-control-interactive" required placeholder="e.g. 100">
-                </div>
-            </div>
-
-            <!-- Category -->
-            <div class="form-group form-group-interactive">
-                <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Category</label>
-                <select name="category" id="categorySelect" class="form-control-interactive" required style="cursor: pointer;">
-                    <option value="" disabled selected>Select a category</option>
-                    <option value="bamboo">Bamboo</option>
-                    <option value="rugs">Rugs</option>
-                    <option value="moonj-sikki">Moonj &amp; Sikki</option>
-                    <option value="painting">Painting</option>
-                    <option value="apparel">Apparel</option>
-                    <option value="khadi">Khadi</option>
-                </select>
-            </div>
-
-            <!-- Sub Category -->
-            <div class="form-group form-group-interactive">
-                <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Sub Category</label>
-                <select name="subCategory" id="subCategorySelect" class="form-control-interactive" style="cursor: pointer;">
-                    <option value="">— Select category first —</option>
-                </select>
-            </div>
-
-            <!-- Gallery -->
-            <div class="form-group" style="margin-bottom: 2rem;">
-                <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Product Gallery</label>
-                <div class="upload-btn-wrapper">
-                    <button class="btn btn-primary" type="button" style="background-color: var(--primary-light); color: var(--primary-dark); border: 1px solid var(--primary-color);">
-                        <i class="fas fa-images" style="margin-right: 8px;"></i> Upload images
-                    </button>
-                    <input type="file" name="images" id="imageUpload" accept="image/*" multiple>
-                </div>
-                <p id="fileCountText" style="margin-top: 5px; color: var(--primary-color); font-weight: 500; display: none;">0 files selected</p>
-                <p style="margin: 15px 0 8px 0; color: var(--text-muted); font-size: 0.9em; font-weight: 500;">Or enter image URLs (one per line):</p>
-                <textarea name="imageUrls" class="form-control-interactive" rows="4" placeholder="https://...&#10;https://..."></textarea>
-            </div>
-
-            <!-- Product Detail Information -->
-            <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-top: 0.5rem;">
-                <h3 style="font-size: 1rem; color: var(--text-main); margin-bottom: 1.5rem; font-weight: 600;">Product Detail Information</h3>
-
-                <div class="form-group form-group-interactive">
-                    <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Material Used</label>
-                    <input type="text" name="material" class="form-control-interactive" placeholder="e.g. Natural Bamboo, Jute, Moonj Grass">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label>Primary Category <span style="color: #ef4444;">*</span></label>
+                    <select name="category" id="categorySelect" class="form-control" required style="cursor: pointer;">
+                        <option value="" disabled selected>— Select a category —</option>
+                        <option value="modular-kitchen">Modular Kitchen Accessories</option>
+                        <option value="kitchen-storage">Kitchen Storage &amp; Organization</option>
+                        <option value="tabletop-cutlery">Tabletop &amp; Cutlery Products</option>
+                        <option value="bathroom-fixtures">Bathroom Fixtures &amp; Accessories</option>
+                        <option value="wardrobe-accessories">Wardrobe Accessories &amp; Storage</option>
+                        <option value="wire-products">Wire Products &amp; Home Furnishings</option>
+                    </select>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    <div class="form-group form-group-interactive">
-                        <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Dimensions</label>
-                        <input type="text" name="dimensions" class="form-control-interactive" placeholder="e.g. 30cm Dia × 15cm H">
-                    </div>
-                    <div class="form-group form-group-interactive">
-                        <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Components</label>
-                        <input type="text" name="components" class="form-control-interactive" placeholder="e.g. 1× Handcrafted basket + lid">
-                    </div>
-                </div>
-
-                <div class="form-group form-group-interactive">
-                    <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Eco-Friendly Green Features</label>
-                    <textarea name="ecoFeatures" class="form-control-interactive" rows="4" placeholder="Enter eco-friendly highlights, one per line. e.g:&#10;100% natural biodegradable materials&#10;No harmful dyes used"></textarea>
-                    <small style="color: var(--text-muted); font-size: 0.8em;">Enter one feature per line — they appear as bullet points on the product page.</small>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-                    <div class="form-group form-group-interactive">
-                        <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Country of Origin</label>
-                        <input type="text" name="countryOfOrigin" class="form-control-interactive" value="India" placeholder="e.g. India">
-                    </div>
-                    <div class="form-group form-group-interactive">
-                        <label style="font-weight: 500; margin-bottom: 0.5rem; display: block;">Artisan Image URL</label>
-                        <input type="url" name="artisanImageUrl" class="form-control-interactive" placeholder="https://... (photo of artisan making product)">
-                    </div>
+                <div class="form-group">
+                    <label>Sub-Category</label>
+                    <select name="subCategory" id="subCategorySelect" class="form-control" style="cursor: pointer;">
+                        <option value="">— Select category first —</option>
+                    </select>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary" id="submitBtn"
-                style="width: 100%; font-size: 1.1em; padding: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 1rem;">
-                <i class="fas fa-plus"></i> Create Product
-            </button>
+            <div class="form-group">
+                <label>Full Description <span style="color: #ef4444;">*</span></label>
+                <textarea name="description" class="form-control" rows="4" required placeholder="Detailed description of features, construction, and functionality..."></textarea>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+            <!-- Section 2: Pricing & Inventory -->
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-tag" style="color: var(--primary-color);"></i> 2. Pricing &amp; Stock
+            </h3>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label>Original MRP / Retail Price (₹)</label>
+                    <input type="number" name="originalPrice" id="originalPriceInput" class="form-control" step="1" placeholder="e.g. 24999">
+                    <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; display: block;">Leave blank if no discount applied.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Selling Price (₹) <span style="color: #ef4444;">*</span></label>
+                    <input type="number" name="price" id="sellingPriceInput" class="form-control" step="1" required placeholder="e.g. 18499">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label>Discount Label</label>
+                    <input type="text" name="discount" id="discountInput" class="form-control" placeholder="e.g. 26% OFF (auto-calculated if empty)">
+                </div>
+
+                <div class="form-group">
+                    <label>Initial Stock Quantity <span style="color: #ef4444;">*</span></label>
+                    <input type="number" name="countInStock" class="form-control" required min="0" placeholder="e.g. 50">
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+            <!-- Section 3: Product Specifications -->
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-sliders" style="color: var(--primary-color);"></i> 3. Specifications &amp; Details
+            </h3>
+
+            <div class="form-group">
+                <label>Material &amp; Finish</label>
+                <input type="text" name="material" class="form-control" placeholder="e.g. SS 304 Grade Stainless Steel & Chrome Finish">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label>Dimensions</label>
+                    <input type="text" name="dimensions" class="form-control" placeholder="e.g. 450mm W × 500mm D × 1900mm H">
+                </div>
+
+                <div class="form-group">
+                    <label>Components Included</label>
+                    <input type="text" name="components" class="form-control" placeholder="e.g. 1× Main Frame, 6× Heavy Wire Baskets, 1× Slide Set">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Eco-Friendly / Sustainability Features</label>
+                <textarea name="ecoFeatures" class="form-control" rows="3" placeholder="Enter one feature per line, e.g:&#10;100% Recyclable Marine-Grade Steel&#10;Corrosion Resistant Zero VOC Finish&#10;Lead-free chrome passivation"></textarea>
+                <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; display: block;">Each line will render as a distinct bullet point on the product details page.</small>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label>Country of Origin</label>
+                    <input type="text" name="countryOfOrigin" class="form-control" value="India" placeholder="e.g. India">
+                </div>
+
+                <div class="form-group">
+                    <label>Artisan / Manufacturing Photo URL</label>
+                    <input type="url" name="artisanImageUrl" class="form-control" placeholder="https://... (photo of craftsperson or workshop)">
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+            <!-- Section 4: Media & Image Gallery -->
+            <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-images" style="color: var(--primary-color);"></i> 4. Media &amp; Product Gallery
+            </h3>
+
+            <div class="form-group">
+                <label>Upload Images from Device</label>
+                <div style="border: 2px dashed var(--border-color); border-radius: 0.85rem; padding: 2rem 1.5rem; text-align: center; background: #fafafa; position: relative;">
+                    <i class="fas fa-cloud-arrow-up" style="font-size: 2.25rem; color: var(--primary-color); margin-bottom: 0.75rem; display: block;"></i>
+                    <p style="font-weight: 600; margin-bottom: 0.25rem; color: var(--secondary-color);">Drag &amp; drop images here or click to browse</p>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Supports JPG, PNG, WEBP up to 10MB each</p>
+                    <input type="file" name="images" id="imageUploadInput" multiple accept="image/*" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
+                </div>
+                <div id="fileUploadSummary" style="margin-top: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--primary-dark); display: none;"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Or Enter Direct Image URLs (one per line)</label>
+                <textarea name="imageUrls" class="form-control" rows="3" placeholder="https://images.unsplash.com/...&#10;https://drive.google.com/file/d/..."></textarea>
+                <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; display: block;">Supports Unsplash, Google Drive share links (auto-converted), and direct image URLs.</small>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div style="margin-top: 2.5rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <a href="/admin/products" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary" id="saveProductBtn" style="padding: 0.85rem 2rem;">
+                    <i class="fas fa-check"></i> Create Product
+                </button>
+            </div>
         </form>
     </div>
 
+    <!-- Category / SubCategory Dynamic Mapper Script -->
     <script>
         const subCategoryMap = {
-            'bamboo':      ['lantern', 'jewellery-cosmetic-box', 'laundry-bag', 'pen-stand', 'utility-box', 'tokri', 'wall-hanging'],
-            'rugs':        ['doormat', 'aasan', 'yoga-mat', 'runner', 'floor-rugs'],
-            'moonj-sikki': ['jewellery-cosmetic-box', 'laundry-bag', 'pen-stand', 'utility-box', 'tokri', 'wall-hanging', 'lantern'],
-            'painting':    ['madhubani', 'warli', 'miniature', 'pattachitra', 'other'],
-            'apparel':     ['shirts', 'pants', 'silk-fabric', 'cotton-fabric', 'dupatta', 'saree'],
-            'khadi':       ['shirts', 'pants', 'silk-fabric', 'cotton-fabric', 'kurta', 'fabric-roll'],
+            'modular-kitchen': [
+                'pantry-pull-outs', 'kitchen-baskets', 'cutlery-holders-stands',
+                'plate-stands', 'bottle-racks', 'spice-racks',
+                'cylinder-trolleys', 'rolling-pin-holders', 'corner-units',
+                'waste-bins', 'multipurpose-baskets'
+            ],
+            'kitchen-storage': [
+                'shelves', 'organizers', 'trays', 'pull-out-systems', 'magic-corners'
+            ],
+            'tabletop-cutlery': [
+                'spoon-stands', 'cup-holders', 'cup-stands', 'napkin-holders', 'cutlery-stands', 'bowls-and-stands'
+            ],
+            'bathroom-fixtures': [
+                'towel-racks', 'corner-caddies', 'soap-holders', 'robe-hooks'
+            ],
+            'wardrobe-accessories': [
+                'wardrobe-racks', 'trouser-organizers', 'storage-accessories'
+            ],
+            'wire-products': [
+                'wire-racks', 'wire-organizers', 'utility-wire-baskets'
+            ],
         };
 
-        const categorySelect    = document.getElementById('categorySelect');
+        const categorySelect = document.getElementById('categorySelect');
         const subCategorySelect = document.getElementById('subCategorySelect');
 
-        function populateSubCategories(cat, currentValue) {
+        function populateSubCategories(cat) {
             subCategorySelect.innerHTML = '';
             const subs = subCategoryMap[cat] || [];
             if (!cat || subs.length === 0) {
@@ -174,38 +214,45 @@
             placeholder.value = '';
             placeholder.textContent = '— Select subcategory —';
             subCategorySelect.appendChild(placeholder);
-            subs.forEach(function(sub) {
+            subs.forEach(sub => {
                 const opt = document.createElement('option');
                 opt.value = sub;
-                opt.textContent = sub.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
-                if (currentValue && sub === currentValue) opt.selected = true;
+                opt.textContent = sub.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
                 subCategorySelect.appendChild(opt);
             });
         }
 
-        categorySelect.addEventListener('change', function() {
-            populateSubCategories(categorySelect.value, null);
-        });
+        categorySelect.addEventListener('change', () => populateSubCategories(categorySelect.value));
 
-        // Init on load
-        if (categorySelect.value) populateSubCategories(categorySelect.value, null);
+        // Auto discount calculation
+        const mrpInput = document.getElementById('originalPriceInput');
+        const spInput = document.getElementById('sellingPriceInput');
+        const discInput = document.getElementById('discountInput');
 
-        // File upload counter
-        document.getElementById('imageUpload').addEventListener('change', function() {
-            const txt = document.getElementById('fileCountText');
-            if (this.files && this.files.length > 0) {
-                txt.style.display = 'block';
-                txt.textContent = this.files.length + ' file(s) selected.';
+        function updateAutoDiscount() {
+            const mrp = parseFloat(mrpInput.value);
+            const sp = parseFloat(spInput.value);
+            if (mrp && sp && mrp > sp && !discInput.value) {
+                const pct = Math.round(((mrp - sp) / mrp) * 100);
+                discInput.placeholder = `${pct}% OFF (auto)`;
+            }
+        }
+
+        mrpInput.addEventListener('input', updateAutoDiscount);
+        spInput.addEventListener('input', updateAutoDiscount);
+
+        // File upload counter summary
+        const imageUploadInput = document.getElementById('imageUploadInput');
+        const fileUploadSummary = document.getElementById('fileUploadSummary');
+
+        imageUploadInput.addEventListener('change', () => {
+            if (imageUploadInput.files && imageUploadInput.files.length > 0) {
+                fileUploadSummary.style.display = 'block';
+                fileUploadSummary.innerHTML = `<i class="fas fa-paperclip"></i> ${imageUploadInput.files.length} file(s) selected for upload.`;
             } else {
-                txt.style.display = 'none';
+                fileUploadSummary.style.display = 'none';
             }
         });
-
-        // Submit button press effect
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.addEventListener('mousedown',  function(){ this.style.transform = 'scale(0.98)'; });
-        submitBtn.addEventListener('mouseup',    function(){ this.style.transform = 'scale(1)'; });
-        submitBtn.addEventListener('mouseleave', function(){ this.style.transform = 'scale(1)'; });
     </script>
 
 <%- include('footer') %>

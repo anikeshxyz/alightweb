@@ -1,7 +1,7 @@
 import ProductDetails from "@/components/features/products/ProductDetails";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://baljyotidesign.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://alightintl.com";
 
 async function getProduct(slug) {
   try {
@@ -32,20 +32,20 @@ export async function generateMetadata({ params }) {
     title: product.name,
     description:
       product.description?.slice(0, 155) ||
-      `Buy ${product.name} — handcrafted by artisans in rural India. Made with ${product.material || "natural materials"}.`,
+      `Source ${product.name} — certified export quality from Alight International. Material: ${product.material || "Industrial Grade"}.`,
     keywords: [
       product.name,
       product.category,
       product.craft,
-      "handmade India",
-      "buy handcrafted",
-      "artisan product",
+      "global trade",
+      "wholesale procurement",
+      "export quality",
     ].filter(Boolean),
     openGraph: {
-      title: `${product.name} | Bal Jyoti Design`,
+      title: `${product.name} | Alight International`,
       description:
         product.description?.slice(0, 155) ||
-        `Handcrafted ${product.name} — supporting rural artisans in India.`,
+        `Global procurement & export: ${product.name} by Alight International.`,
       images: [{ url: imageUrl, width: 800, height: 800, alt: product.name }],
       type: "website",
     },
@@ -106,16 +106,16 @@ export default async function ProductDetailPage({ params }) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description || `Handcrafted ${product.name} by rural Indian artisans.`,
+    description: product.description || `Export-grade ${product.name} from Alight International.`,
     image: imageUrl,
     sku: String(product._id),
     brand: {
       "@type": "Brand",
-      name: "Bal Jyoti Design",
+      name: "Alight International",
     },
     offers: {
       "@type": "Offer",
-      priceCurrency: "INR",
+      priceCurrency: "USD",
       price: product.price,
       availability:
         product.stock > 0
@@ -123,12 +123,12 @@ export default async function ProductDetailPage({ params }) {
           : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
-        name: "Bal Jyoti Design",
+        name: "Alight International",
       },
     },
     countryOfOrigin: {
       "@type": "Country",
-      name: product.countryOfOrigin || "India",
+      name: product.countryOfOrigin || "Singapore",
     },
   };
 

@@ -151,7 +151,7 @@ export default function Checkout() {
                         key: keyId,
                         amount,
                         currency,
-                        name: "Baljyoti",
+                        name: "Alight International",
                         description: "Order Payment",
                         order_id: razorpayOrderId,
                         prefill: {

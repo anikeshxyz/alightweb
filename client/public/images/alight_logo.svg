@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 160" width="100%" height="100%">
+  <!-- EMBLEM: Stylized Delta / Triangle A -->
+  <g id="Emblem">
+    <!-- Top Apex (Black) -->
+    <path d="M 85 18 C 89 11 101 11 105 18 L 138 74 L 114 74 L 95 40 L 76 74 L 52 74 Z" fill="#111111" />
+    
+    <!-- Lower Left Leg & Horizontal Base (Red) -->
+    <path d="M 52 74 L 28 118 C 23 127 30 138 40 138 L 112 138 C 119 138 124 133 124 126 C 124 119 119 114 112 114 L 60 114 L 76 74 Z" fill="#E51921" />
+    
+    <!-- Lower Right Leg (Red) -->
+    <path d="M 138 74 L 158 110 C 163 119 159 130 150 135 C 141 139 132 135 128 126 L 114 74 Z" fill="#E51921" />
+  </g>
+
+  <!-- WORDMARK: ALIGHT -->
+  <text x="185" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="92" font-weight="900" fill="#111111" letter-spacing="5px">ALIGHT</text>
+  
+  <!-- TM Superscript -->
+  <text x="565" y="46" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="900" fill="#111111">TM</text>
+
+  <!-- SUBTITLE TAGLINE -->
+  <text x="188" y="132" font-family="'Times New Roman', Times, 'Cinzel', Georgia, serif" font-size="16.5" font-weight="600" fill="#222222" letter-spacing="3.2px">KITCHEN, BATHROOM AND WARDROBE ACCESSORIES</text>
+</svg>

@@ -43,7 +43,7 @@ app.use('/api', cors({
         }
 
         // Production domains come from env (comma-separated), e.g.
-        //   ALLOWED_ORIGINS=https://baljyotidesign.com,https://www.baljyotidesign.com
+        //   ALLOWED_ORIGINS=https://alightintl.com,https://www.alightintl.com
         // Next.js proxies /api to Express and forwards the browser's Origin header,
         // so the live site's origin must be allowed here even though it's same-site.
         const envOrigins = (process.env.ALLOWED_ORIGINS || process.env.CLIENT_URL || '')
@@ -82,8 +82,8 @@ app.use('/api', cors({
 }));
 
 // ─── BODY PARSERS ─────────────────────────────────────────────────────────────
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
 // ─── SECURITY MIDDLEWARES ─────────────────────────────────────────────────────

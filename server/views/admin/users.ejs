@@ -1,60 +1,172 @@
-<%- include('header', { path: '/users' , admin: admin }) %>
+<%- include('header', { path: '/users', admin: admin, title: 'Customer Accounts & Profiles' }) %>
 
-    <h2>Users Management</h2>
-    <div class="card">
+    <% if (typeof success !== 'undefined' && success) { %>
+        <div class="alert alert-success">
+            <i class="fas fa-circle-check"></i>
+            <span><%= success %></span>
+        </div>
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-danger">
+            <i class="fas fa-circle-exclamation"></i>
+            <span><%= error %></span>
+        </div>
+    <% } %>
+
+    <!-- Header Section -->
+    <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2 style="font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; color: var(--secondary-color); margin-bottom: 0.35rem;">
+                Customer Directory
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                Review registered buyers, contact details, authentication verification, and order histories.
+            </p>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="card-grid" style="margin-bottom: 1.75rem;">
+        <div class="stat-card">
+            <div class="stat-icon icon-purple">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-details">
+                <h3>Total Accounts</h3>
+                <div class="value"><%= totalUsers || 0 %></div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-green">
+                <i class="fas fa-mobile-screen-button"></i>
+            </div>
+            <div class="stat-details">
+                <h3>Phone Verified</h3>
+                <div class="value"><%= verifiedCount || 0 %></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Toolbar -->
+    <div class="card" style="padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+        <form action="/admin/users" method="GET" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+            <div class="search-input-group" style="flex: 1; min-width: 280px;">
+                <i class="fas fa-magnifying-glass"></i>
+                <input type="text" name="q" class="form-control" placeholder="Search by customer name, email address, or mobile number..." value="<%= typeof currentQuery !== 'undefined' ? currentQuery : '' %>">
+            </div>
+
+            <button type="submit" class="btn btn-secondary">
+                <i class="fas fa-search"></i> Search Customers
+            </button>
+
+            <% if (currentQuery && currentQuery.trim()) { %>
+                <a href="/admin/users" class="btn btn-sm" style="color: var(--text-muted); background: #f1f5f9;">
+                    <i class="fas fa-xmark"></i> Clear
+                </a>
+            <% } %>
+        </form>
+    </div>
+
+    <!-- Users Table Card -->
+    <div class="card" style="padding: 0; overflow: hidden;">
         <div class="table-responsive">
-            <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+            <table>
                 <thead>
-                    <tr style="text-align: left; border-bottom: 2px solid #eee;">
-                        <th style="padding: 12px 8px;">Name</th>
-                        <th style="padding: 12px 8px;">Email Address</th>
-                        <th style="padding: 12px 8px;">Mobile</th>
-                        <th style="padding: 12px 8px;">Role</th>
-                        <th style="padding: 12px 8px;">Verified?</th>
-                        <th style="padding: 12px 8px;">Joined</th>
+                    <tr>
+                        <th style="padding-left: 1.75rem;">Customer</th>
+                        <th>Mobile &amp; Verification</th>
+                        <th>Role</th>
+                        <th>Order History</th>
+                        <th>Lifetime Spend</th>
+                        <th style="padding-right: 1.75rem;">Joined Date</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <% if (users && users.length> 0) { %>
-                        <% users.forEach(user=> { %>
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 12px 8px;">
-                                    <%= user.name %>
+                    <% if (users && users.length > 0) { %>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <!-- Customer Name & Avatar -->
+                                <td style="padding-left: 1.75rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.85rem;">
+                                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #e2e8f0, #cbd5e1); color: var(--secondary-color); font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <%= user.name ? user.name.charAt(0).toUpperCase() : 'U' %>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 700; color: var(--secondary-color); font-size: 0.95rem;">
+                                                <%= user.name %>
+                                            </div>
+                                            <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                                <%= user.email %>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td style="padding: 12px 8px;">
-                                    <%= user.email %>
+
+                                <!-- Mobile & Verification -->
+                                <td>
+                                    <div style="font-size: 0.9rem; font-weight: 600; color: var(--secondary-color);">
+                                        <%= user.mobile || '—' %>
+                                    </div>
+                                    <div style="display: flex; gap: 0.35rem; margin-top: 0.25rem;">
+                                        <% if (user.isMobileVerified) { %>
+                                            <span style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; font-weight: 700; color: #059669; background: #ecfdf5; padding: 0.1rem 0.4rem; border-radius: 4px;">
+                                                <i class="fas fa-check"></i> Phone Verified
+                                            </span>
+                                        <% } else { %>
+                                            <span style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); background: #f1f5f9; padding: 0.1rem 0.4rem; border-radius: 4px;">
+                                                Unverified
+                                            </span>
+                                        <% } %>
+                                    </div>
                                 </td>
-                                <td style="padding: 12px 8px;">
-                                    <%= user.mobile || 'N/A' %>
+
+                                <!-- Role -->
+                                <td>
+                                    <% if (user.role === 'admin') { %>
+                                        <span class="badge" style="background: #f5f3ff; color: #6d28d9;">
+                                            <i class="fas fa-shield-halved"></i> Administrator
+                                        </span>
+                                    <% } else { %>
+                                        <span class="badge" style="background: #f8fafc; color: var(--text-muted); border: 1px solid var(--border-color);">
+                                            Customer
+                                        </span>
+                                    <% } %>
                                 </td>
-                                <td style="padding: 12px 8px;">
-                                    <span
-                                        style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; text-transform: capitalize;">
-                                        <%= user.role %>
+
+                                <!-- Orders Count -->
+                                <td>
+                                    <span style="font-weight: 700; color: var(--secondary-color);">
+                                        <%= user.orderCount || 0 %> orders
                                     </span>
                                 </td>
-                                <td style="padding: 12px 8px;">
-                                    <% if (user.isMobileVerified) { %>
-                                        <span style="color: #059669; font-weight: bold; font-size: 0.9rem;">Yes</span>
-                                        <% } else { %>
-                                            <span style="color: #dc2626; font-size: 0.9rem;">No</span>
-                                            <% } %>
+
+                                <!-- Total Spent -->
+                                <td>
+                                    <strong style="color: var(--primary-dark); font-size: 0.95rem;">
+                                        ₹<%= (user.totalSpent || 0).toLocaleString('en-IN') %>
+                                    </strong>
                                 </td>
-                                <td style="padding: 12px 8px; color: #6b7280; font-size: 0.9rem;">
-                                    <%= new Date(user.createdAt).toLocaleDateString() %>
+
+                                <!-- Joined Date -->
+                                <td style="padding-right: 1.75rem; color: var(--text-muted); font-size: 0.85rem;">
+                                    <%= new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
                                 </td>
                             </tr>
-                            <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="6" style="text-align: center; padding: 30px; color: #6b7280;">
-                                            No registered users found in the database.
-                                        </td>
-                                    </tr>
-                                    <% } %>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 4.5rem 1rem; color: var(--text-muted);">
+                                <i class="fas fa-users-slash" style="font-size: 2.25rem; color: #cbd5e1; margin-bottom: 1rem; display: block;"></i>
+                                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--secondary-color); margin-bottom: 0.35rem;">No customer accounts found</h3>
+                                <p style="color: var(--text-muted); font-size: 0.9rem;">Customer accounts will appear here automatically as users sign up.</p>
+                            </td>
+                        </tr>
+                    <% } %>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <%- include('footer') %>
+<%- include('footer') %>
